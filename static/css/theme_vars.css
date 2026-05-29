@@ -1,0 +1,142 @@
+/* ═══════════════════════════════════════════════════════════
+   MUDDO AGRO — THEME VARIABLES
+   SPACE PALETTE: Deep Cosmos · Nebula Blue · Solar Orange ·
+                  Stellar Tan · Pulsar Red · Void Dark
+   ALL dark greens removed.
+═══════════════════════════════════════════════════════════ */
+
+:root {
+  /* ── BRAND CORE (MACL logo colors) ──────────────── */
+  --orange:          #e8651a;
+  --orange-dark:     #c04e0e;
+  --orange-light:    #ff8534;
+  --orange-glow:     #ffa060;
+  --orange-pale:     #fef2e8;
+  --orange-dim:      #3a1a08;
+
+  /* ── NEBULA BLUE ──────────────────────────────── */
+  --blue:            #1a6abf;
+  --blue-dark:       #0d3d7a;
+  --blue-light:      #4a90e0;
+  --blue-glow:       #60aaff;
+  --blue-pale:       #e0eeff;
+  --blue-cosmic:     #050d1a;
+  --blue-nebula:     #0a1628;
+
+  /* ── PULSAR RED ───────────────────────────────── */
+  --red:             #c43010;
+  --red-dark:        #8a1a06;
+  --red-light:       #e84820;
+  --red-glow:        #ff6040;
+  --red-pale:        #fce8e2;
+  --red-dim:         #2a0a05;
+
+  /* ── STELLAR TAN / GOLD ───────────────────────── */
+  --tan:             #d4902a;
+  --tan-dark:        #a06810;
+  --tan-light:       #f0b850;
+  --tan-glow:        #ffd080;
+  --tan-pale:        #fef5e0;
+  --tan-dim:         #2a1a05;
+
+  /* ── SAGE GREEN (accent only — small use) ─────── */
+  --sage:            #5a8a3a;
+  --sage-dark:       #3a5a20;
+  --sage-pale:       #eef5e8;
+
+  /* ── VOID DARK (backgrounds) ───────────────────── */
+  --void-1:          #08060f;   /* deepest space */
+  --void-2:          #0d0b18;
+  --void-3:          #12101f;
+  --void-4:          #181528;
+  --cosmos-border:   #2a2545;
+
+  /* ── LIGHT BACKGROUNDS ──────────────────────────── */
+  --bg:              #faf8ff;   /* very slight cool tint */
+  --bg-card:         #ffffff;
+  --bg-alt:          #f2f0fa;
+  --bg-input:        #ffffff;
+  --bg-dark:         #f5f3fd;
+
+  /* ── TEXT ──────────────────────────────────────── */
+  --text-1:          #14102a;   /* deep cosmic ink */
+  --text-2:          #2e2850;
+  --text-3:          #6a6090;
+  --text-4:          #9a90b8;
+
+  /* ── BORDERS ────────────────────────────────────── */
+  --border:          #e2ddf2;
+  --border-2:        #ede9f8;
+
+  /* ── SHADOWS ────────────────────────────────────── */
+  --sh-sm:  0 2px 8px rgba(26,50,120,.09);
+  --sh-md:  0 6px 24px rgba(26,50,120,.14);
+  --sh-lg:  0 16px 48px rgba(26,50,120,.20);
+  --sh-or:  0 8px 28px rgba(232,101,26,.35);
+  --sh-glow:0 0 20px rgba(74,144,224,.3);
+
+  /* ── LEGACY ALIASES (keep brand_theme.css working) */
+  --or:var(--orange); --or-d:var(--orange-dark); --or-l:var(--orange-light); --or-p:var(--orange-pale);
+  --bl:var(--blue);   --bl-d:var(--blue-dark);   --bl-l:var(--blue-light);   --bl-p:var(--blue-pale);
+  --rd:var(--red);    --rd-d:var(--red-dark);     --rd-l:var(--red-light);    --rd-p:var(--red-pale);
+  --tan-l:var(--tan-light); --tan-d:var(--tan-dark); --tan-p:var(--tan-pale);
+  --gr:var(--sage);   --gr-d:var(--sage-dark);    --gr-p:var(--sage-pale);
+  --bg-c:var(--bg-card); --bg-a:var(--bg-alt); --bg-i:var(--bg-input);
+  --tx1:var(--text-1); --tx2:var(--text-2); --tx3:var(--text-3); --tx4:var(--text-4);
+  --bd:var(--border); --bd2:var(--border-2);
+  --sh1:var(--sh-sm); --sh2:var(--sh-md); --sh3:var(--sh-lg);
+  --cream:var(--bg);
+
+  /* OLD GREEN NAMES → mapped to blue/tan/red equivalents */
+  --green-deep:      var(--blue-dark);
+  --green-dark:      var(--blue);
+  --green-mid:       var(--orange);
+  --green-light:     var(--tan-light);
+  --green-pale:      var(--orange-pale);
+  --green-tint:      var(--orange-pale);
+  --gold:            var(--tan);
+  --macl-orange:     var(--orange);
+  --macl-orange-dark:var(--orange-dark);
+  --macl-orange-pale:var(--orange-pale);
+  --text-primary:    var(--text-1);
+  --text-secondary:  var(--text-2);
+  --text-muted:      var(--text-3);
+  --border-color:    var(--border);
+  --bg-base:         var(--bg);
+}
+
+/* ── DARK THEME ────────────────────────────────────────── */
+[data-theme="dark"] {
+  --bg:        var(--void-1);
+  --bg-card:   var(--void-3);
+  --bg-alt:    var(--void-2);
+  --bg-input:  #1a1730;
+  --bg-dark:   var(--void-4);
+
+  --text-1:    #f0edff;
+  --text-2:    #c8c0e8;
+  --text-3:    #8a80b0;
+  --text-4:    #605880;
+
+  --border:    var(--cosmos-border);
+  --border-2:  #201c38;
+
+  --orange-pale: #2a1205;
+  --blue-pale:   #05112a;
+  --red-pale:    #200a05;
+  --tan-pale:    #201505;
+  --sage-pale:   #0a1005;
+
+  --tx1:var(--text-1); --tx2:var(--text-2); --tx3:var(--text-3); --tx4:var(--text-4);
+  --bd:var(--border); --bd2:var(--border-2);
+  --bg-c:var(--bg-card); --bg-a:var(--bg-alt); --bg-i:var(--bg-input);
+  --or-p:var(--orange-pale); --bl-p:var(--blue-pale); --rd-p:var(--red-pale);
+  --tan-p:var(--tan-pale); --gr-p:var(--sage-pale);
+  --cream:var(--bg);
+  --text-primary:var(--text-1); --text-secondary:var(--text-2);
+  --text-muted:var(--text-3); --border-color:var(--border);
+
+  /* OLD GREEN DARK MODE */
+  --green-pale: var(--blue-pale);
+  --green-tint: var(--orange-pale);
+}

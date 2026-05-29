@@ -1,0 +1,66 @@
+{% extends "admin/base_admin.html" %}
+{% load static %}
+{% block title %}Import Products{% endblock %}
+{% block page_icon %}upload{% endblock %}
+{% block page_heading %}Import Products via CSV{% endblock %}
+
+{% block content %}
+{% if results %}
+<div class="admin-flash {% if results.errors %}flash-error{% else %}flash-success{% endif %}" style="margin-bottom:22px;">
+  <i class="fas {% if results.errors %}fa-exclamation-circle{% else %}fa-check-circle{% endif %}"></i>
+  <span>Import complete — <strong>{{ results.added }}</strong> added, <strong>{{ results.skipped }}</strong> skipped{% if results.errors %}, <strong>{{ results.errors|length }}</strong> error(s){% endif %}.</span>
+</div>
+{% endif %}
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+  <!-- Upload card -->
+  <div class="admin-card">
+    <div class="admin-card-header"><div class="admin-card-title"><i class="fas fa-upload"></i> Upload CSV File</div></div>
+    <div class="admin-card-body">
+      <p style="color:var(--text-muted);font-size:.88rem;margin-bottom:20px;">Upload a CSV file with product data. Existing products with the same name will be skipped (no duplicates).</p>
+      <form method="POST" enctype="multipart/form-data" action="{% url 'admin_import' %}">
+        {% csrf_token %}
+        <div class="admin-form-group">
+          <label>CSV File <span>*</span></label>
+          <input type="file" name="csv_file" accept=".csv" class="admin-input" required>
+        </div>
+        <button type="submit" class="btn-admin btn-primary-admin"><i class="fas fa-upload"></i> Import Now</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Format guide -->
+  <div class="admin-card">
+    <div class="admin-card-header"><div class="admin-card-title"><i class="fas fa-table"></i> CSV Format Guide</div></div>
+    <div class="admin-card-body">
+      <p style="font-size:.84rem;color:var(--text-muted);margin-bottom:12px;">Your CSV must have these column headers in the <strong>first row</strong>:</p>
+      <div style="background:var(--bg-alt);border-radius:9px;padding:14px;font-family:monospace;font-size:.78rem;color:var(--text-secondary);border:1px solid var(--border-color);overflow-x:auto;white-space:nowrap;">
+        name, category, description, active_ingredient, formulation, crops, dosage, packing, image_url
+      </div>
+      <div style="margin-top:16px;">
+        <p style="font-size:.82rem;font-weight:700;color:var(--text-muted);margin-bottom:8px;">Valid <code>category</code> values:</p>
+        <div style="display:flex;gap:7px;flex-wrap:wrap;">
+          <span class="badge badge-denied">pesticide</span>
+          <span class="badge badge-approved">herbicide</span>
+          <span class="badge badge-new">fungicide</span>
+          <span class="badge badge-pending">other</span>
+        </div>
+      </div>
+      <div style="margin-top:16px;padding:12px;background:var(--orange-pale);border-radius:9px;border:1px solid rgba(232,101,26,.2);">
+        <p style="font-size:.8rem;color:var(--text-secondary);margin:0;"><i class="fas fa-lightbulb" style="color:var(--orange);margin-right:5px;"></i>Only <code>name</code> and <code>category</code> are required. All other columns are optional.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% if results and results.errors %}
+<div class="admin-card">
+  <div class="admin-card-header"><div class="admin-card-title"><i class="fas fa-exclamation-triangle" style="color:#f57c00;"></i> Import Errors</div></div>
+  <div class="admin-card-body">
+    {% for err in results.errors %}
+    <div style="font-size:.84rem;color:#c62828;padding:6px 0;border-bottom:1px solid var(--border-color);">{{ err }}</div>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+{% endblock %}

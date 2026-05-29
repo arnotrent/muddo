@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Page Not Found — Muddo Agro{% endblock %}
+{% block content %}
+<section style="min-height:75vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:60px 20px;background:linear-gradient(135deg,var(--bg) 0%,var(--bg-alt) 100%);">
+  <div>
+    <div style="font-size:7rem;line-height:1;font-weight:900;font-family:'Playfair Display',serif;background:linear-gradient(135deg,var(--orange),var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:8px;">404</div>
+    <h1 style="font-size:1.8rem;color:var(--text-primary);margin-bottom:12px;">Page Not Found</h1>
+    <p style="color:var(--text-muted);max-width:420px;margin:0 auto 32px;line-height:1.72;font-size:1rem;">The page you're looking for doesn't exist or has been moved. Try one of these instead:</p>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:32px;">
+      <a href="{% url 'index' %}" class="btn-green btn-ripple" style="padding:11px 22px;border-radius:10px;"><i class="fas fa-home"></i> Go Home</a>
+      <a href="{% url 'pesticides' %}" class="btn-outline" style="padding:11px 22px;border-radius:10px;"><i class="fas fa-flask"></i> Browse Products</a>
+      <a href="{% url 'contact' %}" class="btn-outline" style="padding:11px 22px;border-radius:10px;"><i class="fas fa-envelope"></i> Contact Us</a>
+    </div>
+    <p style="font-size:.86rem;color:var(--text-muted);">Or call us: <a href="tel:+256772507582" style="color:var(--orange);font-weight:700;">+256 772 507582</a></p>
+  </div>
+</section>
+{% endblock %}

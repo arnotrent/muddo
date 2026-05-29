@@ -1,0 +1,66 @@
+{% extends "admin/base_admin.html" %}
+{% load static %}
+{% block title %}Newsletter{% endblock %}
+{% block page_icon %}paper-plane{% endblock %}
+{% block page_heading %}Newsletter Subscribers{% endblock %}
+
+{% block content %}
+<!-- Summary -->
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:22px;">
+  <div class="admin-card" style="margin-bottom:0;">
+    <div class="admin-card-body" style="padding:18px 20px;">
+      <div style="font-size:.72rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;">Total Subscribers</div>
+      <div style="font-family:'Playfair Display',serif;font-size:2rem;font-weight:900;color:var(--text-primary);">{{ subscribers|length }}</div>
+    </div>
+  </div>
+  <div class="admin-card" style="margin-bottom:0;border-color:#a5d6a7;">
+    <div class="admin-card-body" style="padding:18px 20px;">
+      <div style="font-size:.72rem;font-weight:700;color:#2e7d32;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;">Active</div>
+      <div style="font-family:'Playfair Display',serif;font-size:2rem;font-weight:900;color:#2e7d32;">{{ active_count }}</div>
+    </div>
+  </div>
+  <div class="admin-card" style="margin-bottom:0;">
+    <div class="admin-card-body" style="padding:18px 20px;">
+      <div style="font-size:.72rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;">Unsubscribed</div>
+      <div style="font-family:'Playfair Display',serif;font-size:2rem;font-weight:900;color:var(--text-muted);">{{ subscribers|length|add:"-1"|add:"1" }}</div>
+    </div>
+  </div>
+</div>
+
+<div class="admin-card">
+  <div class="admin-card-header">
+    <div class="admin-card-title"><i class="fas fa-list"></i> All Subscribers</div>
+    <input type="text" id="subSearch" placeholder="Search email or name…" oninput="searchTable(this.value,'subTable')"
+      style="padding:6px 12px;border:1.5px solid var(--border-color);border-radius:9px;font-family:'DM Sans',sans-serif;font-size:.82rem;background:var(--bg-input);color:var(--text-primary);width:200px;" onfocus="this.style.borderColor='var(--orange)'" onblur="this.style.borderColor='var(--border-color)'">
+  </div>
+  <div class="tbl-wrap">
+    <table class="data-table" id="subTable">
+      <thead><tr><th>#</th><th>Email</th><th>Name</th><th>Status</th><th>Subscribed</th></tr></thead>
+      <tbody>
+        {% for s in subscribers %}
+        <tr data-search="{{ s.email|lower }} {{ s.name|lower }}">
+          <td style="color:var(--text-muted);font-size:.8rem;">{{ forloop.counter }}</td>
+          <td><a href="mailto:{{ s.email }}" style="color:var(--orange);font-weight:600;">{{ s.email }}</a></td>
+          <td>{{ s.name|default:"—" }}</td>
+          <td><span class="badge {% if s.active %}badge-active{% else %}badge-inactive{% endif %}">{% if s.active %}Active{% else %}Unsubscribed{% endif %}</span></td>
+          <td style="font-size:.8rem;color:var(--text-muted);">{{ s.subscribed_at|date:"d M Y" }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:32px;">No subscribers yet. The newsletter form is in the website footer.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function searchTable(q,tableId){
+  const term=q.toLowerCase();
+  document.querySelectorAll(`#${tableId} tbody tr[data-search]`).forEach(tr=>{
+    tr.style.display=tr.dataset.search.includes(term)?'':'none';
+  });
+}
+</script>
+{% endblock %}

@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Find a Store — Muddo Agro Chemicals LTD{% endblock %}
+{% block extra_head %}
+<style>
+.page-hero{background:linear-gradient(135deg,#0a1428,#0d2b14);padding:76px 0 52px;position:relative;overflow:hidden;}
+.region-btn{padding:8px 20px;border-radius:100px;border:1.5px solid var(--border-color);background:var(--bg-card);color:var(--text-secondary);font-family:'DM Sans',sans-serif;font-size:.84rem;font-weight:600;cursor:pointer;transition:all .2s;}
+.region-btn:hover,.region-btn.active{background:var(--orange);color:#fff;border-color:var(--orange);box-shadow:0 4px 14px rgba(232,101,26,.3);}
+.dist-card{background:var(--bg-card);border:1.5px solid var(--border-color);border-radius:16px;padding:22px;transition:all .3s;position:relative;}
+.dist-card:hover{transform:translateY(-4px);box-shadow:0 16px 40px rgba(0,0,0,.1);border-color:rgba(232,101,26,.3);}
+[data-theme="dark"] .dist-card{background:#160c04;border-color:#2a1808;}
+.dist-card:hover .dist-card-icon{background:var(--orange);color:#fff;}
+.dist-card-icon{width:40px;height:40px;border-radius:10px;background:var(--orange-pale);color:var(--orange);display:flex;align-items:center;justify-content:center;font-size:.9rem;transition:all .3s;flex-shrink:0;}
+.region-badge{display:inline-block;padding:3px 10px;border-radius:100px;font-size:.66rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase;}
+.region-Central{background:#e3f2fd;color:#1565c0;}
+.region-Eastern{background:#e8f5e9;color:#2e7d32;}
+.region-Northern{background:#fff8e1;color:#f57c00;}
+.region-Western{background:#fce4ec;color:#c62828;}
+[data-theme="dark"] .region-Central{background:#0a182a;color:#60aaff;}
+[data-theme="dark"] .region-Eastern{background:#0a1a0a;color:#60c870;}
+[data-theme="dark"] .region-Northern{background:#201505;color:#ffaa40;}
+[data-theme="dark"] .region-Western{background:#1a0505;color:#ff6080;}
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="page-hero">
+  <div class="container">
+    <div style="font-size:.82rem;color:rgba(255,255,255,.55);margin-bottom:14px;">
+      <a href="{% url 'index' %}" style="color:rgba(255,255,255,.65);text-decoration:none;">Home</a>
+      <span style="margin:0 8px;opacity:.35;">/</span>
+      <span style="color:#ffd080;font-weight:700;">Find a Store</span>
+    </div>
+    <div style="display:inline-flex;align-items:center;gap:6px;padding:5px 14px;border-radius:100px;background:rgba(232,101,26,.15);border:1px solid rgba(232,101,26,.28);color:#ffd080;font-size:.73rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;margin-bottom:14px;" class="anim-fade-down">
+      <i class="fas fa-map-marker-alt"></i> Store Locator
+    </div>
+    <h1 class="anim-fade-up" style="font-family:'Playfair Display',serif;font-size:clamp(2rem,4.5vw,3rem);font-weight:900;color:#fff;margin:12px 0;line-height:1.1;">Find a Store Near You</h1>
+    <p class="anim-fade-up delay-1" style="color:rgba(255,255,255,.8);font-size:1rem;max-width:55ch;">{{ distributors|length }} authorised MACL outlets across all four regions of Uganda — Central, Eastern, Northern and Western.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <!-- Filter controls -->
+    <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:28px;" data-reveal="up">
+      <button class="region-btn active" id="btn-all" onclick="filterRegion('',this)">All Regions</button>
+      {% for region in regions %}
+      <button class="region-btn" id="btn-{{ region }}" onclick="filterRegion('{{ region }}',this)">{{ region }}</button>
+      {% endfor %}
+      <div style="margin-left:auto;position:relative;">
+        <i class="fas fa-search" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:.82rem;pointer-events:none;"></i>
+        <input type="text" id="distSearch" placeholder="Search by name or district…" oninput="searchDist(this.value)"
+          style="padding:9px 14px 9px 34px;border:1.5px solid var(--border-color);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:.86rem;background:var(--bg-input);color:var(--text-primary);width:240px;transition:border-color .2s;"
+          onfocus="this.style.borderColor='var(--orange)'" onblur="this.style.borderColor='var(--border-color)'">
+      </div>
+      <span id="distCount" style="font-size:.82rem;font-weight:700;color:var(--text-muted);padding:8px 12px;background:var(--bg-alt);border-radius:8px;">{{ distributors|length }} outlets</span>
+    </div>
+
+    <!-- Grid -->
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:18px;" id="distGrid">
+      {% for d in distributors %}
+      <div class="dist-card" data-reveal="up" data-region="{{ d.region }}"
+        data-search="{{ d.name|lower }} {{ d.district|lower }} {{ d.region|lower }} {{ d.address|lower }}">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;">
+          <div style="flex:1;min-width:0;">
+            <div style="font-weight:800;font-size:1rem;color:var(--text-primary);margin-bottom:5px;">{{ d.name }}</div>
+            <span class="region-badge region-{{ d.region }}">{{ d.region }}</span>
+            <span style="font-size:.72rem;color:var(--text-muted);margin-left:6px;">{{ d.district }}</span>
+          </div>
+          <div class="dist-card-icon"><i class="fas fa-store"></i></div>
+        </div>
+        {% if d.address %}<p style="font-size:.85rem;color:var(--text-muted);margin:0 0 7px;display:flex;align-items:flex-start;gap:7px;"><i class="fas fa-map-marker-alt" style="color:var(--orange);margin-top:3px;flex-shrink:0;"></i>{{ d.address }}</p>{% endif %}
+        {% if d.phone %}<p style="font-size:.88rem;margin:0 0 7px;font-weight:600;"><i class="fas fa-phone" style="color:var(--orange);margin-right:7px;width:14px;text-align:center;"></i><a href="tel:{{ d.phone }}" style="color:var(--orange);">{{ d.phone }}</a></p>{% endif %}
+        {% if d.email %}<p style="font-size:.82rem;color:var(--text-muted);margin:0 0 12px;"><i class="fas fa-envelope" style="color:var(--orange);margin-right:7px;width:14px;text-align:center;"></i><a href="mailto:{{ d.email }}" style="color:var(--orange);">{{ d.email }}</a></p>{% endif %}
+        {% if d.lat and d.lng %}
+        <a href="https://www.google.com/maps?q={{ d.lat }},{{ d.lng }}" target="_blank" rel="noopener"
+          style="display:inline-flex;align-items:center;gap:6px;font-size:.8rem;font-weight:700;color:var(--blue);text-decoration:none;padding:6px 12px;border:1.5px solid var(--blue);border-radius:8px;transition:all .2s;"
+          onmouseover="this.style.background='var(--blue)';this.style.color='#fff'" onmouseout="this.style.background='transparent';this.style.color='var(--blue)'">
+          <i class="fas fa-directions"></i> Get Directions
+        </a>
+        {% endif %}
+      </div>
+      {% empty %}
+      <div style="grid-column:1/-1;text-align:center;padding:48px;color:var(--text-muted);">
+        <i class="fas fa-store-slash" style="font-size:2.5rem;display:block;margin-bottom:14px;color:var(--border-color);"></i>
+        <p>No distributor outlets found. <a href="{% url 'contact' %}" style="color:var(--orange);">Contact us</a> for availability in your area.</p>
+      </div>
+      {% endfor %}
+    </div>
+    <div id="noDistResults" style="display:none;text-align:center;padding:48px 0;color:var(--text-muted);">
+      <i class="fas fa-store-slash" style="font-size:2.5rem;display:block;margin-bottom:14px;color:var(--border-color);"></i>
+      <p>No outlets match your search. <a href="{% url 'contact' %}" style="color:var(--orange);">Contact us directly</a> for your area.</p>
+    </div>
+
+    <!-- HQ banner -->
+    <div style="margin-top:48px;padding:32px;background:linear-gradient(135deg,#0d2b14,#1a4a24);border-radius:18px;display:flex;align-items:center;gap:24px;flex-wrap:wrap;" data-reveal="up">
+      <div style="width:52px;height:52px;border-radius:14px;background:var(--orange);color:#fff;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;"><i class="fas fa-building"></i></div>
+      <div style="flex:1;min-width:200px;">
+        <div style="font-weight:800;font-size:1rem;color:#fff;margin-bottom:4px;">Muddo Agro HQ — Kampala</div>
+        <div style="font-size:.86rem;color:rgba(255,255,255,.7);">Container Village Nakivubo, Equity Bank Basement V013, P.O Box 25240, Kampala</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:7px;">
+        <a href="tel:+256772507582" style="display:flex;align-items:center;gap:7px;color:#fff;text-decoration:none;font-size:.86rem;font-weight:600;"><i class="fas fa-phone" style="color:var(--orange);"></i> +256 772 507582</a>
+        <a href="mailto:kulanju_w@yahoo.com" style="display:flex;align-items:center;gap:7px;color:#fff;text-decoration:none;font-size:.86rem;font-weight:600;"><i class="fas fa-envelope" style="color:var(--orange);"></i> kulanju_w@yahoo.com</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+let activeRegion='';
+function filterRegion(r,btn){
+  activeRegion=r;
+  document.querySelectorAll('.region-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  applyFilters();
+}
+function searchDist(q){ applyFilters(); }
+function applyFilters(){
+  const q=document.getElementById('distSearch').value.toLowerCase();
+  const cards=document.querySelectorAll('.dist-card[data-region]');
+  let shown=0;
+  cards.forEach(c=>{
+    const matchR=!activeRegion||c.dataset.region===activeRegion;
+    const matchQ=!q||c.dataset.search.includes(q);
+    c.style.display=matchR&&matchQ?'':'none';
+    if(matchR&&matchQ)shown++;
+  });
+  document.getElementById('distCount').textContent=shown+' outlet'+(shown!==1?'s':'');
+  document.getElementById('noDistResults').style.display=shown===0?'block':'none';
+}
+</script>
+{% endblock %}

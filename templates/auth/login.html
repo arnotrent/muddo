@@ -1,0 +1,104 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Staff Login — Muddo Agro Chemicals LTD</title>
+<link rel="icon" type="image/png" href="{% static 'images/logo_full.png' %}">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'css/theme_vars.css' %}">
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+<link rel="stylesheet" href="{% static 'css/animations.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<script>(function(){var t=localStorage.getItem('muddo-theme')||'light';document.documentElement.setAttribute('data-theme',t);})();</script>
+<style>
+body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#0d2b14 0%,#1a4a24 40%,#0d3d7a 100%);padding:20px;}
+.login-card{width:100%;max-width:440px;background:var(--bg-card);border-radius:20px;padding:36px;box-shadow:0 24px 80px rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.07);}
+.role-card{padding:14px;border:2px solid var(--border-color);border-radius:12px;text-align:center;cursor:pointer;transition:all .2s;user-select:none;}
+.role-card.active{border-color:var(--orange);background:var(--orange-pale);}
+.form-input{width:100%;padding:12px 14px 12px 40px;border:1.5px solid var(--border-color);border-radius:10px;font-size:.95rem;font-family:'DM Sans',sans-serif;background:var(--bg-input);color:var(--text-primary);transition:border-color .2s,box-shadow .2s;box-sizing:border-box;}
+.form-input:focus{outline:none;border-color:var(--orange);box-shadow:0 0 0 3px rgba(232,101,26,.12);}
+.input-wrap{position:relative;}
+.input-wrap i{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:.85rem;}
+.login-btn{width:100%;padding:13px;background:var(--orange);color:#fff;border:none;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:.96rem;font-weight:700;cursor:pointer;transition:background .2s;display:flex;align-items:center;justify-content:center;gap:8px;}
+.login-btn:hover{background:var(--orange-dark);}
+</style>
+</head>
+<body>
+<div class="anim-fade-up" style="width:100%;max-width:440px;">
+  <div style="text-align:center;margin-bottom:28px;">
+    <img src="{% static 'images/logo_full.png' %}" alt="MACL" style="height:68px;margin-bottom:12px;">
+    <h1 style="font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:900;color:#fff;margin:0;">Muddo Agro Staff Portal</h1>
+    <p style="color:rgba(255,255,255,.55);font-size:.86rem;margin-top:5px;">Authorised personnel only</p>
+  </div>
+
+  <div class="login-card">
+    {% if messages %}{% for message in messages %}
+    <div style="margin-bottom:16px;padding:12px 14px;border-radius:10px;background:{% if 'error' in message.tags %}#fce8e2{% else %}#e8f5e9{% endif %};border:1.5px solid {% if 'error' in message.tags %}#e53935{% else %}#a5d6a7{% endif %};color:{% if 'error' in message.tags %}#c62828{% else %}#2e7d32{% endif %};font-size:.88rem;display:flex;align-items:center;gap:8px;">
+      <i class="fas {% if 'error' in message.tags %}fa-exclamation-circle{% else %}fa-check-circle{% endif %}"></i> {{ message }}
+    </div>{% endfor %}{% endif %}
+
+    <form method="POST" action="{% url 'login' %}">
+      {% csrf_token %}
+      <!-- Role selector -->
+      <div style="margin-bottom:22px;">
+        <p style="font-size:.8rem;font-weight:700;color:var(--text-muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:.06em;">Select Role</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+          <label>
+            <input type="radio" name="role" value="admin" id="r-admin" style="display:none;">
+            <div class="role-card" id="rc-admin" onclick="setRole('admin')">
+              <i class="fas fa-shield-alt" style="font-size:1.4rem;color:var(--orange);display:block;margin-bottom:7px;"></i>
+              <div style="font-weight:800;font-size:.9rem;color:var(--text-primary);">Administrator</div>
+              <div style="font-size:.72rem;color:var(--text-muted);">Full access</div>
+            </div>
+          </label>
+          <label>
+            <input type="radio" name="role" value="agent" id="r-agent" checked style="display:none;">
+            <div class="role-card active" id="rc-agent" onclick="setRole('agent')">
+              <i class="fas fa-user-tie" style="font-size:1.4rem;color:var(--blue);display:block;margin-bottom:7px;"></i>
+              <div style="font-weight:800;font-size:.9rem;color:var(--text-primary);">Field Agent</div>
+              <div style="font-size:.72rem;color:var(--text-muted);">Agent portal</div>
+            </div>
+          </label>
+        </div>
+      </div>
+
+      <div style="margin-bottom:16px;">
+        <label style="font-size:.82rem;font-weight:700;color:var(--text-secondary);display:block;margin-bottom:6px;">Username</label>
+        <div class="input-wrap"><i class="fas fa-user"></i><input type="text" name="username" class="form-input" placeholder="Enter your username" required autofocus></div>
+      </div>
+
+      <div style="margin-bottom:22px;">
+        <label style="font-size:.82rem;font-weight:700;color:var(--text-secondary);display:block;margin-bottom:6px;">Password</label>
+        <div class="input-wrap">
+          <i class="fas fa-lock"></i>
+          <input type="password" id="pw" name="password" class="form-input" placeholder="Enter your password" required>
+          <button type="button" onclick="togglePw()" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text-muted);"><i class="fas fa-eye" id="pw-icon"></i></button>
+        </div>
+      </div>
+
+      <button type="submit" class="login-btn"><i class="fas fa-sign-in-alt"></i> Sign In</button>
+    </form>
+
+    <div style="text-align:center;margin-top:20px;padding-top:16px;border-top:1px solid var(--border-color);">
+      <a href="{% url 'index' %}" style="font-size:.84rem;color:var(--text-muted);text-decoration:none;"><i class="fas fa-arrow-left"></i> Back to Website</a>
+    </div>
+  </div>
+</div>
+
+<script src="{% static 'js/theme.js' %}"></script>
+<script>
+function setRole(r){
+  document.getElementById('r-admin').checked = r==='admin';
+  document.getElementById('r-agent').checked = r==='agent';
+  document.getElementById('rc-admin').classList.toggle('active', r==='admin');
+  document.getElementById('rc-agent').classList.toggle('active', r==='agent');
+}
+function togglePw(){
+  const pw=document.getElementById('pw'), ic=document.getElementById('pw-icon');
+  if(pw.type==='password'){pw.type='text';ic.className='fas fa-eye-slash';}
+  else{pw.type='password';ic.className='fas fa-eye';}
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,75 @@
+{% extends "admin/base_admin.html" %}
+{% load static %}
+{% block title %}Settings{% endblock %}
+{% block page_icon %}cog{% endblock %}
+{% block page_heading %}Settings{% endblock %}
+
+{% block content %}
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+  <!-- Change admin password -->
+  <div class="admin-card">
+    <div class="admin-card-header"><div class="admin-card-title"><i class="fas fa-lock"></i> Change Admin Password</div></div>
+    <div class="admin-card-body">
+      <form method="POST">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="change_password">
+        <div class="admin-form-group"><label>Current Password <span>*</span></label><input name="old_password" type="password" class="admin-input" required></div>
+        <div class="admin-form-group"><label>New Password <span>*</span></label><input name="new_password" type="password" class="admin-input" placeholder="Minimum 8 characters" required></div>
+        <div class="admin-form-group"><label>Confirm New Password <span>*</span></label><input name="confirm_password" type="password" class="admin-input" required></div>
+        <button type="submit" class="btn-admin btn-primary-admin"><i class="fas fa-save"></i> Update Password</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Reset agent password -->
+  <div class="admin-card">
+    <div class="admin-card-header"><div class="admin-card-title"><i class="fas fa-key"></i> Reset Agent Password</div></div>
+    <div class="admin-card-body">
+      <form method="POST">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="reset_agent_password">
+        <div class="admin-form-group">
+          <label>Select Agent <span>*</span></label>
+          <select name="agent_id" class="admin-input" required>
+            <option value="">Choose agent…</option>
+            {% for agent in agents %}
+            <option value="{{ agent.id }}">{{ agent.name }} (@{{ agent.username }})</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="admin-form-group"><label>New Password <span>*</span></label><input name="new_agent_password" type="password" class="admin-input" placeholder="Minimum 6 characters" required></div>
+        <button type="submit" class="btn-admin btn-success-admin"><i class="fas fa-key"></i> Reset Password</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- System info -->
+<div class="admin-card">
+  <div class="admin-card-header"><div class="admin-card-title"><i class="fas fa-info-circle"></i> System Information</div></div>
+  <div class="admin-card-body">
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;">
+      {% for label, value in sysinfo %}
+      <div style="padding:14px 16px;background:var(--bg-alt);border-radius:10px;border:1px solid var(--border-color);">
+        <div style="font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--text-muted);margin-bottom:5px;">{{ label }}</div>
+        <div style="font-size:.92rem;font-weight:700;color:var(--text-primary);">{{ value }}</div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<!-- Danger zone -->
+<div class="admin-card" style="border-color:#ef9a9a;">
+  <div class="admin-card-header" style="background:#fce8e2;"><div class="admin-card-title" style="color:#c62828;"><i class="fas fa-exclamation-triangle"></i> Important Reminders</div></div>
+  <div class="admin-card-body">
+    <ul style="font-size:.88rem;color:var(--text-secondary);line-height:2;margin:0;padding-left:20px;">
+      <li>Change the default admin password <strong>(muddo@admin2024)</strong> before going live.</li>
+      <li>Set <code>DEBUG=False</code> and a strong <code>DJANGO_SECRET_KEY</code> in production.</li>
+      <li>Add your Gmail App Password to enable email notifications.</li>
+      <li>Add a Google Maps API key to enable directions in the Store Locator.</li>
+      <li>Run <code>python manage.py collectstatic</code> before deploying.</li>
+    </ul>
+  </div>
+</div>
+{% endblock %}

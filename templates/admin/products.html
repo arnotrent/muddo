@@ -1,0 +1,111 @@
+{% extends "admin/base_admin.html" %}
+{% load static %}
+{% block title %}Products{% endblock %}
+{% block page_icon %}flask{% endblock %}
+{% block page_heading %}Manage Products{% endblock %}
+
+{% block content %}
+<!-- Add Product Form -->
+<div class="admin-card">
+  <div class="admin-card-header">
+    <div class="admin-card-title"><i class="fas fa-plus-circle"></i> Add New Product</div>
+    <span style="font-size:.8rem;color:var(--text-muted);">{{ products|length }} products in catalogue</span>
+  </div>
+  <div class="admin-card-body">
+    <form method="POST" action="{% url 'admin_add_product' %}" enctype="multipart/form-data">
+      {% csrf_token %}
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+        <div class="admin-form-group"><label>Product Name <span>*</span></label><input name="name" class="admin-input" placeholder="e.g. MUDDOSATE 480SL" required></div>
+        <div class="admin-form-group"><label>Category <span>*</span></label>
+          <select name="category" class="admin-input" required>
+            <option value="pesticide">Pesticide</option>
+            <option value="herbicide">Herbicide</option>
+            <option value="fungicide">Fungicide</option>
+            <option value="other">Other / Agri Input</option>
+          </select>
+        </div>
+        <div class="admin-form-group"><label>Active Ingredient</label><input name="active_ingredient" class="admin-input" placeholder="e.g. Glyphosate 480 g/l"></div>
+        <div class="admin-form-group"><label>Formulation</label><input name="formulation" class="admin-input" placeholder="e.g. Soluble Liquid (SL)"></div>
+        <div class="admin-form-group"><label>Target Crops</label><input name="crops" class="admin-input" placeholder="e.g. Maize, Vegetables"></div>
+        <div class="admin-form-group"><label>Dosage / Rate</label><input name="dosage" class="admin-input" placeholder="e.g. 3–5 L/ha"></div>
+        <div class="admin-form-group"><label>Pack Sizes</label><input name="packing" class="admin-input" placeholder="e.g. 100ml, 500ml, 1L, 5L"></div>
+        <div class="admin-form-group"><label>Initial Stock Qty</label><input name="stock_qty" type="number" min="0" value="0" class="admin-input"></div>
+        <div class="admin-form-group"><label>Reorder Level</label><input name="reorder_level" type="number" min="0" value="10" class="admin-input"></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+        <div class="admin-form-group"><label>Product Image (upload)</label><input name="product_image" type="file" accept="image/*" class="admin-input"></div>
+        <div class="admin-form-group"><label>Or Image URL</label><input name="image_url" class="admin-input" placeholder="https://…"></div>
+      </div>
+      <div class="admin-form-group"><label>Description</label><textarea name="description" class="admin-input" rows="3" placeholder="Describe the product — uses, benefits, mode of action…"></textarea></div>
+      <div style="display:flex;gap:10px;">
+        <button type="submit" class="btn-admin btn-primary-admin"><i class="fas fa-plus"></i> Add Product</button>
+        <button type="reset" class="btn-admin btn-secondary-admin"><i class="fas fa-times"></i> Clear</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Products Table -->
+<div class="admin-card">
+  <div class="admin-card-header">
+    <div class="admin-card-title"><i class="fas fa-list"></i> All Products</div>
+    <div style="display:flex;gap:10px;align-items:center;">
+      <input type="text" id="prodSearch" placeholder="Search products…" oninput="searchTable(this.value,'prodTable')"
+        style="padding:7px 12px;border:1.5px solid var(--border-color);border-radius:9px;font-family:'DM Sans',sans-serif;font-size:.84rem;background:var(--bg-input);color:var(--text-primary);width:200px;" onfocus="this.style.borderColor='var(--orange)'" onblur="this.style.borderColor='var(--border-color)'">
+    </div>
+  </div>
+  <div class="tbl-wrap">
+    <table class="data-table" id="prodTable">
+      <thead>
+        <tr><th style="width:44px;"></th><th>Product</th><th>Category</th><th>Active Ingredient</th><th>Pack Sizes</th><th>Stock</th><th>Actions</th></tr>
+      </thead>
+      <tbody>
+        {% for p in products %}
+        <tr data-search="{{ p.name|lower }} {{ p.active_ingredient|lower }} {{ p.category }}">
+          <td><img src="{{ p.display_image }}" alt="" style="width:40px;height:40px;object-fit:cover;border-radius:8px;" onerror="this.style.display='none'"></td>
+          <td>
+            <strong style="color:var(--text-primary);">{{ p.name }}</strong>
+            {% if p.description %}<br><small style="color:var(--text-muted);font-size:.76rem;">{{ p.description|truncatechars:55 }}</small>{% endif %}
+          </td>
+          <td>
+            <span class="badge {% if p.category == 'pesticide' %}badge-denied{% elif p.category == 'herbicide' %}badge-approved{% elif p.category == 'fungicide' %}badge-new{% else %}badge-pending{% endif %}">
+              {{ p.get_category_display }}
+            </span>
+          </td>
+          <td style="font-size:.82rem;color:var(--text-muted);max-width:180px;">{{ p.active_ingredient|default:"—"|truncatechars:40 }}</td>
+          <td style="font-size:.82rem;">{{ p.packing|default:"—" }}</td>
+          <td>
+            {% if p.stock_qty == 0 %}<span class="badge badge-out">Out</span>
+            {% elif p.stock_qty <= 10 %}<span class="badge badge-low">{{ p.stock_qty }}</span>
+            {% else %}<span class="badge badge-in">{{ p.stock_qty }}</span>{% endif %}
+          </td>
+          <td>
+            <div style="display:flex;gap:5px;align-items:center;">
+              <a href="{{ p.get_absolute_url }}" target="_blank" class="btn-admin btn-secondary-admin" style="padding:5px 9px;font-size:.76rem;" title="View on site"><i class="fas fa-eye"></i></a>
+              <a href="{% url 'product_spec_sheet' p.id %}" target="_blank" class="btn-admin btn-secondary-admin" style="padding:5px 9px;font-size:.76rem;" title="Download PDF spec sheet"><i class="fas fa-file-pdf"></i></a>
+              <form method="POST" action="{% url 'admin_delete_product' p.id %}" style="display:inline;" onsubmit="return confirm('Delete {{ p.name }}? This cannot be undone.')">
+                {% csrf_token %}
+                <button type="submit" class="btn-admin btn-danger-admin" style="padding:5px 9px;font-size:.76rem;"><i class="fas fa-trash"></i></button>
+              </form>
+            </div>
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="7" style="text-align:center;color:var(--text-muted);padding:32px;">No products yet. Add one above or run <code>python manage.py seed_data</code>.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function searchTable(q, tableId){
+  const term=q.toLowerCase();
+  document.querySelectorAll(`#${tableId} tbody tr[data-search]`).forEach(tr=>{
+    tr.style.display=tr.dataset.search.includes(term)?'':'none';
+  });
+}
+</script>
+{% endblock %}

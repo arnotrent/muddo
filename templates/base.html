@@ -1,0 +1,108 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>{% block title %}Muddo Agro Chemicals LTD{% endblock %}</title>
+<meta name="description" content="Uganda's trusted MAAIF-registered distributor of pesticides, herbicides, fungicides and fertilizers. Call +256 772 507582.">
+<meta property="og:title" content="Muddo Agro Chemicals LTD"><meta property="og:type" content="website">
+<link rel="icon" type="image/png" href="{% static 'images/logo_full.png' %}">
+<link rel="manifest" href="{% static 'manifest.json' %}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'css/theme_vars.css' %}">
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+<link rel="stylesheet" href="{% static 'css/animations.css' %}">
+<link rel="stylesheet" href="{% static 'css/responsive.css' %}">
+<link rel="stylesheet" href="{% static 'css/typography.css' %}">
+<link rel="stylesheet" href="{% static 'css/brand_theme.css' %}">
+<link rel="stylesheet" href="{% static 'css/print.css' %}" media="print">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+{% block extra_head %}{% endblock %}
+<script>(function(){var t=localStorage.getItem('muddo-theme')||'light';document.documentElement.setAttribute('data-theme',t);})();</script>
+{% if ga_id %}<script async src="https://www.googletagmanager.com/gtag/js?id={{ ga_id }}"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','{{ ga_id }}');</script>{% endif %}
+</head>
+<body data-user-id="{{ request.user.id|default:0 }}" data-user-role="{% if request.user.is_staff %}admin{% else %}agent{% endif %}" data-user-initial="{{ request.user.get_full_name|first|upper|default:request.user.username|first|upper }}">
+<div class="scroll-progress"></div>
+<!-- TOPBAR -->
+<div class="topbar"><div class="container"><div class="topbar-left"><span><i class="fas fa-phone"></i> +256 772 507582 / 0702-507582</span><span class="topbar-sep">·</span><span><i class="fas fa-clock"></i> Mon–Sat 8am–6pm</span></div><div class="topbar-right"><a href="mailto:kulanju_w@yahoo.com"><i class="fas fa-envelope"></i> kulanju_w@yahoo.com</a><a href="https://facebook.com/p/MUDDO-AGRO-Chemicals-LTD-100063836929481/" target="_blank"><i class="fab fa-facebook"></i></a>{% if request.user.is_authenticated %}<a href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i> Logout</a>{% else %}<a href="{% url 'login' %}"><i class="fas fa-lock"></i> Staff Login</a>{% endif %}</div></div></div>
+<!-- NAVBAR -->
+<nav class="navbar" id="navbar">
+  <div class="container"><div class="nav-inner">
+    <a href="{% url 'index' %}" class="nav-brand"><img src="{% static 'images/logo_full.png' %}" alt="MACL" class="nav-logo"><div class="nav-brand-text"><span class="nav-brand-name">MUDDO AGRO</span><span class="nav-brand-sub">Chemicals LTD</span></div></a>
+    <form id="globalSearchForm" method="GET" action="{% url 'search' %}" autocomplete="off" style="position:relative;">
+      <i class="fas fa-search" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:.82rem;pointer-events:none;"></i>
+      <input type="text" id="globalSearchInput" name="q" placeholder="Search products…" style="padding:8px 12px 8px 34px;border:1.5px solid var(--border-color);border-radius:20px;font-family:'DM Sans',sans-serif;font-size:.86rem;background:var(--bg-input);color:var(--text-primary);width:220px;transition:all .2s;" onfocus="this.style.width='280px';this.style.borderColor='var(--orange)'" onblur="this.style.width='220px';this.style.borderColor='var(--border-color)'">
+      <div id="searchSuggestions" style="display:none;position:absolute;top:100%;left:0;right:0;background:var(--bg-card);border:1.5px solid var(--border-color);border-radius:10px;margin-top:4px;box-shadow:var(--sh-md);z-index:500;overflow:hidden;"></div>
+    </form>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="{% url 'index' %}" class="nav-link {% if request.resolver_match.url_name == 'index' %}active{% endif %}">Home</a></li>
+      <li class="nav-dropdown">
+        <a href="#" class="nav-link dropdown-toggle">Products <i class="fas fa-chevron-down" style="font-size:.65rem;margin-left:3px;"></i></a>
+        <ul class="dropdown-menu">
+          <li><a href="{% url 'pesticides' %}" class="dropdown-item"><i class="fas fa-bug"></i> Pesticides</a></li>
+          <li><a href="{% url 'herbicides' %}" class="dropdown-item"><i class="fas fa-seedling"></i> Herbicides</a></li>
+          <li><a href="{% url 'fungicides' %}" class="dropdown-item"><i class="fas fa-microscope"></i> Fungicides</a></li>
+          <li><a href="{% url 'other_products' %}" class="dropdown-item"><i class="fas fa-boxes"></i> Fertilizers & Equipment</a></li>
+          <li style="border-top:1px solid var(--border-color);margin-top:6px;padding-top:6px;"><a href="{% url 'compare' %}" class="dropdown-item"><i class="fas fa-balance-scale"></i> Compare Products</a></li>
+        </ul>
+      </li>
+      <li><a href="{% url 'distributors' %}" class="nav-link {% if request.resolver_match.url_name == 'distributors' %}active{% endif %}">Find a Store</a></li>
+      <li><a href="{% url 'about' %}" class="nav-link {% if request.resolver_match.url_name == 'about' %}active{% endif %}">About</a></li>
+      <li><a href="{% url 'contact' %}" class="nav-link {% if request.resolver_match.url_name == 'contact' %}active{% endif %}">Contact</a></li>
+      {% if request.user.is_authenticated %}{% if request.user.is_staff %}<li><a href="{% url 'admin_dashboard' %}" class="nav-link" style="color:var(--orange);font-weight:700;"><i class="fas fa-cog"></i> Admin</a></li>{% else %}<li><a href="{% url 'agent_dashboard' %}" class="nav-link" style="color:var(--orange);font-weight:700;"><i class="fas fa-user"></i> Portal</a></li>{% endif %}{% endif %}
+      <li><button class="theme-toggle-pill" style="background:none;border:1.5px solid var(--border-color);border-radius:100px;padding:6px 14px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:.8rem;font-weight:600;color:var(--text-secondary);display:flex;align-items:center;gap:6px;" aria-label="Toggle dark mode"><i class="fas fa-moon" data-theme-icon></i><span data-theme-label>Dark</span></button></li>
+    </ul>
+    <a href="{% url 'contact' %}" class="nav-cta btn-green btn-ripple" style="padding:9px 18px;border-radius:9px;"><i class="fas fa-envelope"></i> Enquire</a>
+    <button class="hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false"><span></span><span></span><span></span></button>
+  </div></div>
+</nav>
+<!-- MESSAGES -->
+{% if messages %}<div style="position:fixed;top:78px;right:18px;z-index:9999;display:flex;flex-direction:column;gap:8px;max-width:370px;">{% for message in messages %}<div class="slide-in-right" style="display:flex;align-items:center;gap:10px;padding:12px 15px;border-radius:12px;background:var(--bg-card);border:1.5px solid {% if 'error' in message.tags %}#e53935{% else %}var(--orange){% endif %};box-shadow:var(--sh-md);"><i class="fas {% if 'error' in message.tags %}fa-exclamation-circle{% else %}fa-check-circle{% endif %}" style="color:{% if 'error' in message.tags %}#e53935{% else %}var(--orange){% endif %};flex-shrink:0;"></i><span style="font-size:.88rem;color:var(--text-primary);">{{ message|safe }}</span><button onclick="this.closest('div').remove()" style="background:none;border:none;cursor:pointer;color:var(--text-muted);margin-left:auto;"><i class="fas fa-times"></i></button></div>{% endfor %}</div>{% endif %}
+<main>{% block content %}{% endblock %}</main>
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-inner"><div class="footer-grid">
+    <div class="footer-brand">
+      <img src="{% static 'images/logo_full.png' %}" alt="MACL" style="height:50px;margin-bottom:14px;">
+      <p>Uganda's trusted MAAIF-registered distributor of high-quality agrochemicals since 2020. Serving all four regions.</p>
+      <div class="footer-social"><a href="https://facebook.com/p/MUDDO-AGRO-Chemicals-LTD-100063836929481/" target="_blank" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a><a href="https://wa.me/{{ wa_number }}" target="_blank" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a><a href="mailto:kulanju_w@yahoo.com" aria-label="Email"><i class="fas fa-envelope"></i></a></div>
+    </div>
+    <div class="footer-col"><h4>Products</h4><ul><li><a href="{% url 'pesticides' %}"><i class="fas fa-bug"></i> Pesticides</a></li><li><a href="{% url 'herbicides' %}"><i class="fas fa-seedling"></i> Herbicides</a></li><li><a href="{% url 'fungicides' %}"><i class="fas fa-microscope"></i> Fungicides</a></li><li><a href="{% url 'other_products' %}"><i class="fas fa-boxes"></i> Fertilizers & Equipment</a></li><li><a href="{% url 'compare' %}"><i class="fas fa-balance-scale"></i> Compare</a></li></ul></div>
+    <div class="footer-col"><h4>Company</h4><ul><li><a href="{% url 'about' %}">About Us & FAQ</a></li><li><a href="{% url 'distributors' %}">Find a Store</a></li><li><a href="{% url 'contact' %}">Contact Us</a></li><li><a href="{% url 'track' %}">Track Enquiry</a></li><li><a href="{% url 'search' %}">Search Products</a></li></ul></div>
+    <div class="footer-col"><h4>Contact</h4><ul class="footer-contact"><li><i class="fas fa-map-marker-alt"></i> Container Village Nakivubo, Equity Bank Basement V013, Kampala</li><li><i class="fas fa-phone"></i><a href="tel:+256772507582">+256 772 507582</a> / <a href="tel:+256702507582">0702-507582</a></li><li><i class="fas fa-phone"></i><a href="tel:+256772971620">0772 971620</a> / <a href="tel:+256701971620">0701-971620</a></li><li><i class="fas fa-envelope"></i><a href="mailto:kulanju_w@yahoo.com">kulanju_w@yahoo.com</a></li></ul>
+    <div style="margin-top:16px;"><p style="font-size:.8rem;color:rgba(255,255,255,.7);margin-bottom:8px;">Get agronomy tips & news:</p><form id="newsletterForm" style="display:flex;gap:6px;">{% csrf_token %}<input type="email" name="email" placeholder="your@email.com" required style="flex:1;padding:8px 12px;border-radius:8px;border:none;font-size:.84rem;background:rgba(255,255,255,.12);color:#fff;min-width:0;"><button type="submit" style="padding:8px 12px;background:var(--orange);border:none;border-radius:8px;color:#fff;cursor:pointer;font-size:.82rem;"><i class="fas fa-paper-plane"></i></button></form></div></div>
+  </div></div>
+  <div class="footer-bottom"><div class="footer-inner"><p>© {% now "Y" %} Muddo Agro Chemicals LTD. All rights reserved. MAAIF-Registered Distributor.</p><p><a href="{% url 'sitemap' %}" style="color:rgba(255,255,255,.4);">Sitemap</a></p></div></div>
+</footer>
+<a href="https://wa.me/{{ wa_number }}?text=Hello%20Muddo%20Agro%2C%20I%20need%20help" class="whatsapp-fab" target="_blank" rel="noopener" aria-label="WhatsApp Us"><i class="fab fa-whatsapp"></i></a>
+<button id="backToTop" aria-label="Back to top"><i class="fas fa-arrow-up"></i></button>
+<button class="theme-fab theme-toggle" aria-label="Toggle theme"><i class="fas fa-moon" data-theme-icon></i></button>
+<!-- MODAL -->
+<div id="productModalOverlay" class="product-modal-overlay">
+  <div class="product-modal"><button class="modal-close-btn" onclick="closeModal()"><i class="fas fa-times"></i></button>
+  <div style="display:grid;grid-template-columns:1fr 1.4fr;">
+    <div style="position:relative;"><img id="modalImg" src="" alt="" style="width:100%;height:100%;object-fit:cover;min-height:280px;display:block;"><div style="display:flex;justify-content:space-between;padding:10px;background:var(--bg-alt);"><button class="modal-nav-btn" onclick="modalNav(-1)"><i class="fas fa-chevron-left"></i></button><span id="modalCounter" style="font-size:.76rem;color:var(--text-muted);align-self:center;"></span><button class="modal-nav-btn" onclick="modalNav(1)"><i class="fas fa-chevron-right"></i></button></div></div>
+    <div style="padding:22px;overflow-y:auto;max-height:80vh;"><span id="modalTag" class="product-tag" style="margin-bottom:12px;display:inline-block;"></span><h2 id="modalName" style="font-family:'Playfair Display',serif;font-weight:900;margin:0 0 10px;font-size:1.4rem;color:var(--blue-dark);"></h2><p id="modalDesc" style="font-size:.9rem;line-height:1.72;color:var(--text-secondary);margin-bottom:16px;"></p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:18px;">
+      <div style="background:var(--bg-alt);border-radius:8px;padding:9px 11px;"><div style="font-size:.66rem;font-weight:800;letter-spacing:.07em;color:var(--text-muted);text-transform:uppercase;margin-bottom:2px;">Active Ingr.</div><div id="modalIngr" style="font-size:.84rem;font-weight:600;color:var(--text-primary);"></div></div>
+      <div style="background:var(--bg-alt);border-radius:8px;padding:9px 11px;"><div style="font-size:.66rem;font-weight:800;letter-spacing:.07em;color:var(--text-muted);text-transform:uppercase;margin-bottom:2px;">Formulation</div><div id="modalForm" style="font-size:.84rem;font-weight:600;color:var(--text-primary);"></div></div>
+      <div style="background:var(--bg-alt);border-radius:8px;padding:9px 11px;"><div style="font-size:.66rem;font-weight:800;letter-spacing:.07em;color:var(--text-muted);text-transform:uppercase;margin-bottom:2px;">Crops</div><div id="modalCrops" style="font-size:.84rem;font-weight:600;color:var(--text-primary);"></div></div>
+      <div style="background:var(--bg-alt);border-radius:8px;padding:9px 11px;"><div style="font-size:.66rem;font-weight:800;letter-spacing:.07em;color:var(--text-muted);text-transform:uppercase;margin-bottom:2px;">Dosage</div><div id="modalDose" style="font-size:.84rem;font-weight:600;color:var(--text-primary);"></div></div>
+      <div style="background:var(--bg-alt);border-radius:8px;padding:9px 11px;"><div style="font-size:.66rem;font-weight:800;letter-spacing:.07em;color:var(--text-muted);text-transform:uppercase;margin-bottom:2px;">Pack Sizes</div><div id="modalPack" style="font-size:.84rem;font-weight:600;color:var(--text-primary);"></div></div>
+    </div>
+    <div style="display:flex;gap:9px;"><a id="modalViewBtn" href="#" class="btn-outline" style="flex:1;justify-content:center;text-align:center;font-size:.82rem;"><i class="fas fa-info-circle"></i> Details</a><a id="modalEnqBtn" href="#" class="btn-green" style="flex:1;justify-content:center;text-align:center;font-size:.82rem;"><i class="fas fa-envelope"></i> Enquire</a></div>
+    </div>
+  </div></div>
+</div>
+<script src="{% static 'js/theme.js' %}"></script>
+<script src="{% static 'js/main.js' %}"></script>
+<script src="{% static 'js/modal.js' %}"></script>
+<script src="{% static 'js/enhancements.js' %}"></script>
+{% block extra_js %}{% endblock %}
+<script>
+document.getElementById('newsletterForm')?.addEventListener('submit',async function(e){e.preventDefault();const email=this.querySelector('[name=email]').value;const btn=this.querySelector('button[type=submit]');const orig=btn.innerHTML;btn.innerHTML='<i class="fas fa-spinner fa-spin"></i>';btn.disabled=true;const csrf=document.querySelector('[name=csrfmiddlewaretoken]')?.value||'';try{const res=await fetch('{% url "subscribe" %}',{method:'POST',headers:{'Content-Type':'application/json','X-CSRFToken':csrf},body:JSON.stringify({email,name:''})});const data=await res.json();btn.innerHTML=data.ok?'<i class="fas fa-check"></i>':'<i class="fas fa-times"></i>';setTimeout(()=>{btn.innerHTML=orig;btn.disabled=false;},3000);}catch{btn.innerHTML=orig;btn.disabled=false;}});
+if('serviceWorker'in navigator)navigator.serviceWorker.register('{% static "sw.js" %}').catch(()=>{});
+</script>
+</body>
+</html>

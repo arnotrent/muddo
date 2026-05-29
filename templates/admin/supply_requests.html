@@ -1,0 +1,92 @@
+{% extends "admin/base_admin.html" %}
+{% load static %}
+{% block title %}Supply Requests{% endblock %}
+{% block page_icon %}truck{% endblock %}
+{% block page_heading %}Supply Requests{% endblock %}
+
+{% block content %}
+<div style="display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap;align-items:center;">
+  <button onclick="filterSR('')"         class="btn-admin btn-primary-admin sr-f" id="sf-all">All ({{ requests|length }})</button>
+  <button onclick="filterSR('pending')"  class="btn-admin btn-secondary-admin sr-f" id="sf-pending">Pending</button>
+  <button onclick="filterSR('approved')" class="btn-admin btn-secondary-admin sr-f" id="sf-approved">Approved</button>
+  <button onclick="filterSR('denied')"   class="btn-admin btn-secondary-admin sr-f" id="sf-denied">Denied</button>
+</div>
+
+<div class="admin-card">
+  <div class="tbl-wrap">
+    <table class="data-table" id="srTable">
+      <thead>
+        <tr><th>Agent</th><th>Product Requested</th><th>Quantity</th><th>Notes</th><th>Status</th><th>Date</th><th>Respond</th></tr>
+      </thead>
+      <tbody>
+        {% for r in requests %}
+        <tr data-status="{{ r.status }}">
+          <td>
+            <strong>{{ r.agent.name }}</strong>
+            <br><small style="color:var(--text-muted);font-size:.75rem;">{{ r.agent.region|default:"—" }} · {{ r.agent.district|default:"" }}</small>
+          </td>
+          <td><strong>{{ r.product_name }}</strong></td>
+          <td style="font-size:.86rem;color:var(--text-muted);">{{ r.quantity }}</td>
+          <td style="font-size:.82rem;color:var(--text-muted);max-width:180px;">{{ r.notes|default:"—"|truncatechars:60 }}</td>
+          <td><span class="badge badge-{{ r.status }}">{{ r.status|title }}</span></td>
+          <td style="font-size:.78rem;color:var(--text-muted);white-space:nowrap;">{{ r.created_at|date:"d M Y" }}</td>
+          <td>
+            <button onclick="openRespond({{ r.id }},'{{ r.product_name|escapejs }}','{{ r.agent.name|escapejs }}')"
+              class="btn-admin btn-primary-admin" style="padding:5px 12px;font-size:.8rem;">
+              <i class="fas fa-reply"></i> Respond
+            </button>
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="7" style="text-align:center;color:var(--text-muted);padding:32px;">No supply requests yet.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Respond modal -->
+<div id="srModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:2000;align-items:center;justify-content:center;padding:20px;">
+  <div style="background:var(--bg-card);border-radius:18px;padding:30px;max-width:480px;width:100%;box-shadow:0 24px 80px rgba(0,0,0,.3);border:1.5px solid var(--border-color);">
+    <h3 style="font-family:'DM Sans',sans-serif;font-size:1.05rem;font-weight:800;color:var(--text-primary);margin:0 0 6px;">Respond to Supply Request</h3>
+    <p id="srModalDesc" style="font-size:.86rem;color:var(--text-muted);margin:0 0 20px;"></p>
+    <form id="srForm" method="POST">
+      {% csrf_token %}
+      <div class="admin-form-group">
+        <label>Decision <span style="color:#e53935;">*</span></label>
+        <select name="status" class="admin-input">
+          <option value="approved">✓ Approve — product will be dispatched</option>
+          <option value="denied">✗ Deny — with explanation</option>
+        </select>
+      </div>
+      <div class="admin-form-group">
+        <label>Response Message</label>
+        <textarea name="response" class="admin-input" rows="3" placeholder="Provide details on delivery, availability, or reason for denial…"></textarea>
+      </div>
+      <div style="display:flex;gap:10px;">
+        <button type="submit" class="btn-admin btn-primary-admin"><i class="fas fa-paper-plane"></i> Send Response</button>
+        <button type="button" onclick="closeSRModal()" class="btn-admin btn-secondary-admin"><i class="fas fa-times"></i> Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function filterSR(s){
+  document.querySelectorAll('.sr-f').forEach(b=>b.classList.replace('btn-primary-admin','btn-secondary-admin'));
+  document.getElementById('sf-'+(s||'all'))?.classList.replace('btn-secondary-admin','btn-primary-admin');
+  document.querySelectorAll('#srTable tbody tr[data-status]').forEach(tr=>{
+    tr.style.display=(!s||tr.dataset.status===s)?'':'none';
+  });
+}
+function openRespond(id,product,agent){
+  document.getElementById('srModalDesc').textContent=agent+' — '+product;
+  document.getElementById('srForm').action='/admin-panel/supply-requests/'+id+'/respond/';
+  document.getElementById('srModal').style.display='flex';
+}
+function closeSRModal(){document.getElementById('srModal').style.display='none';}
+document.getElementById('srModal').addEventListener('click',function(e){if(e.target===this)closeSRModal();});
+</script>
+{% endblock %}

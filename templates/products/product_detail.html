@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}{{ product.name }} — Muddo Agro Chemicals LTD{% endblock %}
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/products.css' %}">
+<style>
+.detail-hero{background:linear-gradient(135deg,#0d0b18 0%,#1a1028 100%);padding:56px 0 40px;}
+.detail-grid{display:grid;grid-template-columns:1fr 1.55fr;gap:48px;align-items:start;margin-top:40px;}
+.detail-img-wrap{border-radius:18px;overflow:hidden;border:1.5px solid var(--border-color);background:var(--bg-alt);aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;position:sticky;top:80px;}
+.detail-img-wrap img{width:100%;height:100%;object-fit:cover;}
+.spec-table{width:100%;border-collapse:collapse;border-radius:12px;overflow:hidden;border:1.5px solid var(--border-color);}
+.spec-table thead{background:var(--blue-dark);}
+.spec-table th{padding:12px 16px;text-align:left;color:rgba(255,255,255,.7);font-size:.75rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;}
+.spec-table td:first-child{background:var(--bg-alt);font-size:.82rem;font-weight:700;color:var(--text-muted);width:38%;padding:12px 16px;border-bottom:1px solid var(--border-color);}
+[data-theme="dark"] .spec-table td:first-child{background:#1a1008;}
+.spec-table td:last-child{padding:12px 16px;font-size:.9rem;color:var(--text-primary);font-weight:600;border-bottom:1px solid var(--border-color);}
+.spec-table tr:last-child td{border-bottom:none;}
+.action-btn{display:flex;align-items:center;justify-content:center;gap:8px;padding:13px 20px;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:.9rem;font-weight:700;cursor:pointer;text-decoration:none;transition:all .2s;width:100%;box-sizing:border-box;}
+@media(max-width:900px){.detail-grid{grid-template-columns:1fr;}.detail-img-wrap{position:static;aspect-ratio:16/9;}}
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Breadcrumb hero -->
+<div class="detail-hero">
+  <div class="container">
+    <div style="font-size:.82rem;color:rgba(255,255,255,.5);margin-bottom:12px;">
+      <a href="{% url 'index' %}" style="color:rgba(255,255,255,.6);text-decoration:none;">Home</a>
+      <span style="margin:0 8px;opacity:.35;">/</span>
+      <a href="/{{ product.category }}{% if product.category == 'other' %}-products{% else %}s{% endif %}/" style="color:rgba(255,255,255,.6);text-decoration:none;">{{ product.get_category_display }}</a>
+      <span style="margin:0 8px;opacity:.35;">/</span>
+      <span style="color:#ffd080;font-weight:700;">{{ product.name }}</span>
+    </div>
+    <span class="product-tag tag-{{ product.category }}" style="margin-bottom:12px;display:inline-flex;">
+      {% if product.category == 'pesticide' %}<i class="fas fa-bug"></i>{% elif product.category == 'herbicide' %}<i class="fas fa-seedling"></i>{% elif product.category == 'fungicide' %}<i class="fas fa-microscope"></i>{% else %}<i class="fas fa-boxes"></i>{% endif %}
+      {{ product.get_category_display }}
+    </span>
+  </div>
+</div>
+
+<section class="section" style="padding-top:0;">
+  <div class="container">
+    <div class="detail-grid">
+      <!-- LEFT: Image + actions -->
+      <div>
+        <div class="detail-img-wrap">
+          <img src="{{ product.display_image }}" alt="{{ product.name }}" onerror="this.src='{% static 'images/products_all.png' %}'">
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px;margin-top:16px;">
+          <a href="{% url 'contact' %}?subject=Product+Enquiry+{{ product.name|urlencode }}" class="action-btn" style="background:var(--orange);color:#fff;"><i class="fas fa-envelope"></i> Enquire Now</a>
+          <a href="https://wa.me/{{ wa_number }}?text=Hello%20MACL%2C%20I%20am%20interested%20in%20{{ product.name|urlencode }}" target="_blank" class="action-btn" style="background:#25d366;color:#fff;"><i class="fab fa-whatsapp"></i> WhatsApp Order</a>
+          <div style="display:flex;gap:10px;">
+            <a href="{% url 'product_spec_sheet' product.id %}" class="action-btn" style="background:var(--bg-alt);color:var(--text-secondary);border:1.5px solid var(--border-color);flex:1;font-size:.82rem;"><i class="fas fa-file-pdf"></i> Spec Sheet PDF</a>
+            <button onclick="window.print()" class="action-btn" style="background:var(--bg-alt);color:var(--text-secondary);border:1.5px solid var(--border-color);flex:1;font-size:.82rem;"><i class="fas fa-print"></i> Print</button>
+          </div>
+        </div>
+        <!-- Share -->
+        <div style="margin-top:14px;padding:14px;background:var(--bg-alt);border-radius:12px;border:1px solid var(--border-color);">
+          <p style="font-size:.74rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:9px;">Share This Product</p>
+          <div style="display:flex;gap:8px;">
+            <button onclick="shareWhatsApp('Check out {{ product.name }} at Muddo Agro Chemicals:')" class="btn-outline" style="flex:1;justify-content:center;font-size:.78rem;padding:7px;"><i class="fab fa-whatsapp"></i></button>
+            <button onclick="shareFacebook()" class="btn-outline" style="flex:1;justify-content:center;font-size:.78rem;padding:7px;"><i class="fab fa-facebook"></i></button>
+            <button onclick="copyLink()" class="btn-outline" style="flex:1;justify-content:center;font-size:.78rem;padding:7px;"><i class="fas fa-link"></i> Copy</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: Info -->
+      <div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap;">
+          {% if product.stock_qty == 0 %}<span class="badge" style="background:#fce8e2;color:#c62828;font-size:.78rem;padding:5px 12px;"><i class="fas fa-times-circle"></i> Out of Stock</span>
+          {% elif product.stock_qty <= 10 %}<span class="badge" style="background:#fff8e1;color:#f57c00;font-size:.78rem;padding:5px 12px;"><i class="fas fa-exclamation-circle"></i> Low Stock</span>
+          {% else %}<span class="badge" style="background:#e8f5e9;color:#2e7d32;font-size:.78rem;padding:5px 12px;"><i class="fas fa-check-circle"></i> In Stock</span>{% endif %}
+          <span style="font-size:.78rem;color:var(--text-muted);background:var(--bg-alt);padding:5px 12px;border-radius:100px;border:1px solid var(--border-color);">MAAIF Registered</span>
+        </div>
+
+        <h1 style="font-family:'Playfair Display',serif;font-size:clamp(1.6rem,3vw,2.3rem);font-weight:900;color:var(--blue-dark);margin:0 0 14px;line-height:1.15;">{{ product.name }}</h1>
+        {% if product.description %}
+        <p style="font-size:1rem;line-height:1.82;color:var(--text-secondary);margin-bottom:24px;border-left:3px solid var(--orange);padding-left:16px;">{{ product.description }}</p>
+        {% endif %}
+
+        <!-- Specs table -->
+        <div style="margin-bottom:22px;">
+          <h3 style="font-size:.82rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:12px;display:flex;align-items:center;gap:8px;"><i class="fas fa-flask" style="color:var(--orange);"></i> Technical Specifications</h3>
+          <table class="spec-table">
+            <thead><tr><th colspan="2">Product Technical Data</th></tr></thead>
+            <tbody>
+              {% for label, value in specs %}{% if value %}
+              <tr><td>{{ label }}</td><td>{{ value }}</td></tr>
+              {% endif %}{% endfor %}
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Safety notice -->
+        <div style="border-left:4px solid var(--orange);background:var(--orange-pale);border-radius:0 10px 10px 0;padding:14px 16px;margin-bottom:16px;">
+          <p style="font-size:.85rem;color:var(--text-secondary);margin:0;line-height:1.65;">
+            <strong style="color:var(--orange);"><i class="fas fa-exclamation-triangle"></i> Safe Use:</strong>
+            Always read the complete product label before use. Wear appropriate PPE — gloves, goggles and protective clothing. Observe pre-harvest intervals. Keep out of reach of children and away from food.
+          </p>
+        </div>
+
+        <!-- MAAIF badge -->
+        <div style="display:flex;align-items:center;gap:12px;padding:14px 16px;background:var(--bg-alt);border-radius:12px;border:1.5px solid var(--border-color);">
+          <i class="fas fa-certificate" style="color:var(--orange);font-size:1.4rem;flex-shrink:0;"></i>
+          <p style="font-size:.84rem;color:var(--text-secondary);margin:0;line-height:1.55;">All products distributed by Muddo Agro Chemicals LTD are registered with Uganda's Ministry of Agriculture, Animal Industry and Fisheries (MAAIF). Certificates available on request.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Related products -->
+    {% if related %}
+    <div style="margin-top:64px;" data-reveal="up">
+      <div class="section-header" style="margin-bottom:28px;">
+        <div class="section-tag"><i class="fas fa-layer-group"></i> Related</div>
+        <h2 class="section-title">More {{ product.get_category_display }}s</h2>
+      </div>
+      <div class="products-grid" style="grid-template-columns:repeat(3,1fr);">
+        {% for r in related %}
+        <div class="product-card" data-id="{{ r.id }}" data-name="{{ r.name }}" data-cat="{{ r.category }}"
+          data-desc="{{ r.description|truncatechars:200 }}" data-img="{{ r.display_image }}"
+          data-ingr="{{ r.active_ingredient }}" data-form="{{ r.formulation }}"
+          data-crops="{{ r.crops }}" data-dose="{{ r.dosage }}" data-pack="{{ r.packing }}" data-stock="{{ r.stock_qty }}">
+          <div class="product-card-img">
+            <img src="{{ r.display_image }}" alt="{{ r.name }}" loading="lazy" onerror="this.src='{% static 'images/products_all.png' %}'">
+            <button class="quick-view-btn"><i class="fas fa-eye"></i> Quick View</button>
+          </div>
+          <div class="product-card-body">
+            <span class="product-tag tag-{{ r.category }}">{{ r.get_category_display }}</span>
+            <h3>{{ r.name }}</h3>
+            <p>{{ r.description|truncatechars:90 }}</p>
+            <div class="product-card-footer">
+              <a href="{{ r.get_absolute_url }}" class="btn-outline"><i class="fas fa-info-circle"></i> Details</a>
+              <a href="{% url 'contact' %}" class="btn-green" style="flex:1;justify-content:center;"><i class="fas fa-envelope"></i> Enquire</a>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

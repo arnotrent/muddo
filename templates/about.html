@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}About Us & FAQ — Muddo Agro Chemicals LTD{% endblock %}
+{% block content %}
+
+<section class="page-hero" style="background:linear-gradient(135deg,#0d2b14,#1a4a24,#0d1a3a);padding:76px 0 52px;position:relative;overflow:hidden;">
+  <div class="container">
+    <div style="font-size:.82rem;color:rgba(255,255,255,.55);margin-bottom:14px;"><a href="{% url 'index' %}" style="color:rgba(255,255,255,.65);text-decoration:none;">Home</a><span style="margin:0 8px;opacity:.35;">/</span><span style="color:#ffd080;font-weight:700;">About</span></div>
+    <div style="display:inline-flex;align-items:center;gap:6px;padding:5px 14px;border-radius:100px;background:rgba(232,101,26,.15);border:1px solid rgba(232,101,26,.28);color:#ffd080;font-size:.73rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;margin-bottom:14px;" class="anim-fade-down"><i class="fas fa-leaf"></i> Our Story</div>
+    <h1 class="anim-fade-up" style="font-family:'Playfair Display',serif;font-size:clamp(2rem,4.5vw,3rem);font-weight:900;color:#fff;margin:12px 0;">About Muddo Agro Chemicals</h1>
+    <p class="anim-fade-up delay-1" style="color:rgba(255,255,255,.8);font-size:1rem;max-width:55ch;">Uganda's trusted MAAIF-registered distributor of high-quality agricultural chemicals since 2020.</p>
+  </div>
+</section>
+
+<!-- WHO WE ARE -->
+<section class="section">
+  <div class="container">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center;" data-reveal="up">
+      <div>
+        <div class="section-tag"><i class="fas fa-building"></i> Who We Are</div>
+        <h2 class="section-title" style="text-align:left;margin-top:10px;">MACL — Muddo Agro Chemicals LTD</h2>
+        <p>Based in Kampala's Container Village Nakivubo, Equity Bank Basement V013, Muddo Agro Chemicals LTD (MACL) is a Ministry of Agriculture (MAAIF)-registered distributor of pesticides, herbicides, fungicides, fertilizers and spraying equipment serving farmers across all regions of Uganda.</p>
+        <p>We partner directly with manufacturers in India, China and Europe to bring authentic, proven agrochemical solutions at competitive prices — with zero counterfeit products, ever.</p>
+        <p><i class="fas fa-phone" style="color:var(--orange);margin-right:6px;"></i><strong>Tel:</strong> 0772-507582 / 0702-507582 &nbsp;|&nbsp; 0772 971620 / 0701-971620<br>
+        <i class="fas fa-envelope" style="color:var(--orange);margin-right:6px;"></i><strong>Email:</strong> <a href="mailto:kulanju_w@yahoo.com" style="color:var(--orange);">kulanju_w@yahoo.com</a></p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:24px;">
+          {% for stat, label in stats_list %}
+          <div style="text-align:center;padding:16px;background:var(--orange-pale);border-radius:12px;border:1.5px solid rgba(232,101,26,.15);">
+            <div style="font-family:'Playfair Display',serif;font-size:1.9rem;font-weight:900;color:var(--blue-dark);">{{ stat }}</div>
+            <div style="font-size:.76rem;font-weight:600;color:var(--text-muted);margin-top:4px;">{{ label }}</div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      <div style="border-radius:20px;overflow:hidden;height:420px;box-shadow:0 20px 60px rgba(0,0,0,.12);">
+        <img src="{% static 'images/product_store.png' %}" alt="MACL Store" style="width:100%;height:100%;object-fit:cover;" onerror="this.src='{% static 'images/products_all.png' %}'">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUCTS WE DISTRIBUTE -->
+<section class="section section-alt">
+  <div class="container">
+    <div class="section-header" data-reveal="up">
+      <div class="section-tag"><i class="fas fa-flask"></i> Our Products</div>
+      <h2 class="section-title">What We Distribute</h2>
+      <p class="section-desc">From our official company letterhead — genuine MACL products in active distribution across Uganda.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;" data-reveal="up">
+      {% for name, cat, color, bg in product_samples %}
+      <div style="padding:14px 16px;border-radius:12px;background:{{ bg }};border:1.5px solid {{ color }}22;text-align:center;">
+        <div style="font-size:.82rem;font-weight:800;color:{{ color }};margin-bottom:4px;">{{ name }}</div>
+        <div style="font-size:.7rem;color:var(--text-muted);text-transform:capitalize;">{{ cat }}</div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="section">
+  <div class="container" style="max-width:820px;">
+    <div class="section-header" data-reveal="up">
+      <div class="section-tag"><i class="fas fa-question-circle"></i> FAQ</div>
+      <h2 class="section-title">Frequently Asked Questions</h2>
+      <p class="section-desc">Everything you need to know about our products and services.</p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      {% for q, a in faqs %}
+      <div class="faq-item" style="background:var(--bg-card);border:1.5px solid var(--border-color);border-radius:12px;overflow:hidden;transition:border-color .25s;" data-reveal="up">
+        <button onclick="toggleFaq(this)" style="width:100%;padding:17px 20px;text-align:left;background:none;border:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:14px;font-family:'DM Sans',sans-serif;font-size:.96rem;font-weight:700;color:var(--text-primary);">
+          <span>{{ q }}</span>
+          <i class="fas fa-chevron-down" style="flex-shrink:0;color:var(--orange);transition:transform .3s;font-size:.8rem;"></i>
+        </button>
+        <div style="max-height:0;overflow:hidden;transition:max-height .35s cubic-bezier(.22,1,.36,1);">
+          <div style="padding:0 20px 17px;font-size:.94rem;color:var(--text-secondary);line-height:1.78;border-top:1px solid var(--border-color);">{{ a }}</div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    <div style="text-align:center;margin-top:40px;" data-reveal="up">
+      <p style="color:var(--text-muted);margin-bottom:16px;">Have a question not answered here?</p>
+      <a href="{% url 'contact' %}" class="btn-green btn-ripple"><i class="fas fa-envelope"></i> Ask Us Directly</a>
+    </div>
+  </div>
+</section>
+
+<script>
+function toggleFaq(btn){
+  const item=btn.closest('.faq-item'),ans=item.querySelector('div[style*="max-height"]'),icon=btn.querySelector('i');
+  const open=ans.style.maxHeight&&ans.style.maxHeight!=='0px';
+  document.querySelectorAll('.faq-item div[style*="max-height"]').forEach(a=>a.style.maxHeight='0px');
+  document.querySelectorAll('.faq-item button i').forEach(i=>i.style.transform='');
+  document.querySelectorAll('.faq-item').forEach(i=>i.style.borderColor='var(--border-color)');
+  if(!open){ans.style.maxHeight=ans.scrollHeight+'px';icon.style.transform='rotate(180deg)';item.style.borderColor='var(--orange)';}
+}
+document.querySelector('.faq-item button')?.click();
+</script>
+{% endblock %}

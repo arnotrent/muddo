@@ -1,0 +1,229 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Muddo Agro Chemicals LTD — Uganda's Trusted Agrochemical Distributor{% endblock %}
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/products.css' %}">
+<style>
+.hero-wrap{min-height:90vh;display:flex;align-items:center;background:linear-gradient(135deg,#08060f 0%,#1a0a04 50%,#0a1520 100%);position:relative;overflow:hidden;}
+.hero-wrap::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 70% 50%,rgba(232,101,26,.22) 0%,transparent 65%);pointer-events:none;}
+.hero-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;width:100%;padding:80px 0 60px;}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 14px;border-radius:100px;background:rgba(232,101,26,.15);border:1px solid rgba(232,101,26,.3);color:#ffb07a;font-size:.74rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;}
+.hstat{text-align:center;padding:16px 12px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:12px;}
+.hstat-num{font-family:'Playfair Display',serif;font-size:2rem;font-weight:900;color:#e8b84a;line-height:1;}
+.hstat-lbl{font-size:.7rem;color:rgba(255,255,255,.6);margin-top:4px;font-weight:600;letter-spacing:.04em;}
+.hero-cards{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.hero-prod-card{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:14px;overflow:hidden;transition:all .3s;text-decoration:none;display:block;}
+.hero-prod-card:hover{background:rgba(255,255,255,.13);border-color:rgba(232,101,26,.4);transform:translateY(-3px);}
+.hero-prod-card img{width:100%;height:90px;object-fit:cover;display:block;}
+.hero-prod-info{padding:9px 12px;}
+.hero-prod-name{font-size:.76rem;font-weight:700;color:#fff;line-height:1.3;}
+.hero-prod-cat{font-size:.62rem;color:rgba(255,255,255,.5);text-transform:capitalize;margin-top:2px;}
+.cat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;}
+.cat-card{background:var(--bg-card);border:1.5px solid var(--border-color);border-radius:16px;overflow:hidden;text-decoration:none;display:block;transition:all .3s;}
+.cat-card:hover{transform:translateY(-5px);box-shadow:0 20px 50px rgba(232,101,26,.14);border-color:rgba(232,101,26,.3);}
+.cat-card-img{height:130px;overflow:hidden;position:relative;}
+.cat-card-img img{width:100%;height:100%;object-fit:cover;transition:transform .4s;}
+.cat-card:hover .cat-card-img img{transform:scale(1.08);}
+.cat-accent{height:4px;}
+.cat-card-body{padding:15px 17px;}
+.cat-card-title{font-size:.96rem;font-weight:800;color:var(--blue-dark);font-family:'DM Sans',sans-serif;margin-bottom:3px;}
+[data-theme="dark"] .cat-card-title{color:#f5d0a0;}
+.cat-card-count{font-size:.76rem;color:var(--text-muted);}
+.why-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+.why-card{padding:22px;border-radius:14px;background:var(--bg-card);border:1.5px solid var(--border-color);transition:all .3s;}
+.why-card:hover{transform:translateY(-4px);box-shadow:0 16px 40px rgba(232,101,26,.12);border-color:rgba(232,101,26,.3);}
+[data-theme="dark"] .why-card{background:#160c04;border-color:#2a1808;}
+.why-icon-wrap{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1rem;margin-bottom:14px;}
+.why-card h3{font-size:.95rem;font-weight:800;color:var(--blue-dark);margin-bottom:7px;font-family:'DM Sans',sans-serif;}
+[data-theme="dark"] .why-card h3{color:#f5d0a0;}
+.why-card p{font-size:.83rem;color:var(--text-muted);line-height:1.68;}
+.cta-band{background:linear-gradient(135deg,#1c0e06,#2a1408,#0d1e0f);padding:64px 0;}
+@media(max-width:960px){.cat-grid{grid-template-columns:1fr 1fr;}.hero-grid{grid-template-columns:1fr;}.hero-cards{display:none;}.why-grid{grid-template-columns:1fr 1fr;}}
+@media(max-width:600px){.cat-grid{grid-template-columns:1fr 1fr;}.why-grid{grid-template-columns:1fr;}}
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- HERO -->
+<div class="hero-wrap">
+  <div class="container">
+    <div class="hero-grid">
+      <div>
+        <div class="hero-badge anim-fade-down"><i class="fas fa-certificate"></i> MAAIF-Registered Distributor · Est. 2020</div>
+        <h1 class="anim-fade-up" style="font-family:'Playfair Display',serif;font-size:clamp(2rem,4.5vw,3.4rem);font-weight:900;color:#fff;line-height:1.1;margin:16px 0;">
+          Uganda's Trusted<br><span style="color:#e8b84a;">Agrochemical</span><br>Partner
+        </h1>
+        <p class="anim-fade-up delay-1" style="color:rgba(255,255,255,.82);font-size:1rem;line-height:1.75;max-width:50ch;margin-bottom:26px;">
+          Genuine pesticides, herbicides, fungicides, fertilizers and spraying equipment. MAAIF-registered. Kampala-based. Nationwide delivery.
+        </p>
+        <div class="anim-fade-up delay-2" style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:34px;">
+          <a href="{% url 'pesticides' %}" class="btn-green btn-ripple" style="padding:11px 24px;border-radius:10px;"><i class="fas fa-flask"></i> Browse Products</a>
+          <a href="https://wa.me/{{ wa_number }}?text=Hello%20Muddo%20Agro%2C%20I%20need%20help" target="_blank" class="btn-green btn-ripple" style="padding:11px 22px;border-radius:10px;background:#25d366;border-color:#25d366;"><i class="fab fa-whatsapp"></i> WhatsApp Us</a>
+          <a href="{% url 'contact' %}" style="display:inline-flex;align-items:center;gap:7px;padding:11px 20px;border-radius:10px;border:1.5px solid rgba(255,255,255,.28);color:#fff;font-weight:700;font-size:.9rem;text-decoration:none;transition:all .2s;" onmouseover="this.style.background='rgba(255,255,255,.1)'" onmouseout="this.style.background='transparent'"><i class="fas fa-envelope"></i> Send Message</a>
+        </div>
+        <div class="anim-fade-up delay-3" style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;">
+          {% with total=stats.pesticides|add:stats.herbicides|add:stats.fungicides|add:stats.other %}
+          <div class="hstat"><div class="hstat-num count-up" data-target="{{ total }}" data-suffix="+">{{ total }}+</div><div class="hstat-lbl">Products</div></div>
+          {% endwith %}
+          <div class="hstat"><div class="hstat-num count-up" data-target="{{ stats.distributors }}" data-suffix="+">{{ stats.distributors }}+</div><div class="hstat-lbl">Outlets</div></div>
+          <div class="hstat"><div class="hstat-num">4</div><div class="hstat-lbl">Regions</div></div>
+        </div>
+      </div>
+      <div class="hero-cards anim-fade-left delay-2">
+        {% for product in featured|slice:":4" %}
+        <a href="{{ product.get_absolute_url }}" class="hero-prod-card">
+          <img src="{{ product.display_image }}" alt="{{ product.name }}" loading="lazy" onerror="this.src='{% static 'images/products_all.png' %}'">
+          <div class="hero-prod-info"><div class="hero-prod-name">{{ product.name }}</div><div class="hero-prod-cat">{{ product.get_category_display }}</div></div>
+        </a>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+  <div style="position:absolute;bottom:22px;left:50%;transform:translateX(-50%);" class="scroll-indicator"><i class="fas fa-chevron-down" style="color:rgba(255,255,255,.4);font-size:1.2rem;"></i></div>
+</div>
+
+<!-- CATEGORIES -->
+<section class="section">
+  <div class="container">
+    <div class="section-header" data-reveal="up">
+      <div class="section-tag"><i class="fas fa-th-large"></i> Our Range</div>
+      <h2 class="section-title">Product Categories</h2>
+      <p class="section-desc">MAAIF-registered products across four specialist categories — all genuine, all in stock.</p>
+    </div>
+    <div class="cat-grid">
+      {% for icon, color, bg, title, url_name, cat_key, img in categories %}
+      <a href="{% url url_name %}" class="cat-card hover-lift" data-reveal="up" data-reveal-delay="{{ forloop.counter0 }}00">
+        <div class="cat-card-img">
+          <img src="{{ img }}" alt="{{ title }}" loading="lazy" onerror="this.src='{% static 'images/products_all.png' %}'">
+          <div style="position:absolute;inset:0;background:linear-gradient(to bottom,transparent 50%,rgba(0,0,0,.45));"></div>
+        </div>
+        <div class="cat-accent" style="background:{{ color }};"></div>
+        <div class="cat-card-body">
+          <div style="width:34px;height:34px;border-radius:9px;background:{{ bg }};color:{{ color }};display:flex;align-items:center;justify-content:center;font-size:.85rem;margin-bottom:9px;"><i class="fas fa-{{ icon }}"></i></div>
+          <div class="cat-card-title">{{ title }}</div>
+          <div class="cat-card-count">{{ stats|default_if_none:0 }} products available</div>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- FEATURED PRODUCTS -->
+<section class="section section-alt">
+  <div class="container">
+    <div class="section-header" data-reveal="up">
+      <div class="section-tag"><i class="fas fa-star"></i> Popular</div>
+      <h2 class="section-title">Featured Products</h2>
+      <p class="section-desc">Trusted by thousands of Ugandan farmers — our most requested agrochemical solutions.</p>
+    </div>
+    <div class="products-grid">
+      {% for product in featured %}
+      <div class="product-card" data-reveal="up" data-reveal-delay="{{ forloop.counter0 }}0"
+        data-id="{{ product.id }}" data-name="{{ product.name }}" data-cat="{{ product.category }}"
+        data-desc="{{ product.description|truncatechars:200 }}" data-img="{{ product.display_image }}"
+        data-ingr="{{ product.active_ingredient }}" data-form="{{ product.formulation }}"
+        data-crops="{{ product.crops }}" data-dose="{{ product.dosage }}" data-pack="{{ product.packing }}"
+        data-stock="{{ product.stock_qty }}">
+        <div class="product-card-img">
+          <img src="{{ product.display_image }}" alt="{{ product.name }}" loading="lazy" onerror="this.src='{% static 'images/products_all.png' %}'">
+          {% if product.stock_qty == 0 %}<span class="stock-badge stock-out"><i class="fas fa-times-circle"></i> Out of Stock</span>
+          {% elif product.stock_qty <= 10 %}<span class="stock-badge stock-low"><i class="fas fa-exclamation-circle"></i> Low Stock</span>
+          {% else %}<span class="stock-badge stock-in"><i class="fas fa-check-circle"></i> In Stock</span>{% endif %}
+          <button class="quick-view-btn"><i class="fas fa-eye"></i> Quick View</button>
+        </div>
+        <div class="product-card-body">
+          <span class="product-tag tag-{{ product.category }}">{% if product.category == 'pesticide' %}<i class="fas fa-bug"></i>{% elif product.category == 'herbicide' %}<i class="fas fa-seedling"></i>{% elif product.category == 'fungicide' %}<i class="fas fa-microscope"></i>{% else %}<i class="fas fa-boxes"></i>{% endif %} {{ product.get_category_display }}</span>
+          <h3>{{ product.name }}</h3>
+          <p>{{ product.description|truncatechars:95 }}</p>
+          <div class="spec-pills">
+            {% if product.active_ingredient %}<div class="spec-pill"><strong>A.I.:</strong> {{ product.active_ingredient|truncatechars:38 }}</div>{% endif %}
+            {% if product.packing %}<div class="spec-pill"><i class="fas fa-box" style="color:var(--blue);font-size:.62rem;"></i> {{ product.packing }}</div>{% endif %}
+          </div>
+          <div class="product-card-footer">
+            <a href="{{ product.get_absolute_url }}" class="btn-outline" onclick="event.stopPropagation();"><i class="fas fa-info-circle"></i> Details</a>
+            <a href="{% url 'contact' %}?subject=Product+Enquiry" class="btn-green" style="flex:1;justify-content:center;" onclick="event.stopPropagation();"><i class="fas fa-envelope"></i> Enquire</a>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    <div style="text-align:center;margin-top:36px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;" data-reveal="up">
+      <a href="{% url 'pesticides' %}" class="btn-outline"><i class="fas fa-bug"></i> Pesticides</a>
+      <a href="{% url 'herbicides' %}" class="btn-outline"><i class="fas fa-seedling"></i> Herbicides</a>
+      <a href="{% url 'fungicides' %}" class="btn-outline"><i class="fas fa-microscope"></i> Fungicides</a>
+      <a href="{% url 'other_products' %}" class="btn-outline"><i class="fas fa-boxes"></i> Fertilizers</a>
+    </div>
+  </div>
+</section>
+
+<!-- WHY MACL -->
+<section class="section">
+  <div class="container">
+    <div class="section-header" data-reveal="up">
+      <div class="section-tag"><i class="fas fa-award"></i> Why Choose Us</div>
+      <h2 class="section-title">The MACL Difference</h2>
+      <p class="section-desc">Six reasons Uganda's farmers and distributors choose Muddo Agro Chemicals LTD.</p>
+    </div>
+    <div class="why-grid">
+      {% for icon, color, bg, title, desc in why_cards %}
+      <div class="why-card hover-lift" data-reveal="up" data-reveal-delay="{{ forloop.counter0 }}70">
+        <div class="why-icon-wrap" style="background:{{ bg }};color:{{ color }};"><i class="fas fa-{{ icon }}"></i></div>
+        <h3>{{ title }}</h3>
+        <p>{{ desc }}</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- STORE SECTION -->
+<section class="section section-alt">
+  <div class="container">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;" data-reveal="up">
+      <div>
+        <div class="section-tag"><i class="fas fa-store"></i> Visit Us</div>
+        <h2 class="section-title" style="text-align:left;margin-top:10px;">See Our Full Product Range</h2>
+        <p style="color:var(--text-muted);line-height:1.75;margin-bottom:18px;">Visit our main store at Container Village Nakivubo, Equity Bank Basement V013, Kampala — or find one of our 11 authorised outlets across Uganda.</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:22px;">
+          <div style="border-radius:12px;overflow:hidden;height:120px;"><img src="{% static 'images/product_store.png' %}" alt="Our Store" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none'"></div>
+          <div style="border-radius:12px;overflow:hidden;height:120px;"><img src="{% static 'images/products_all.png' %}" alt="Our Products" style="width:100%;height:100%;object-fit:cover;"></div>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <a href="{% url 'distributors' %}" class="btn-green btn-ripple"><i class="fas fa-map-marker-alt"></i> Find a Store</a>
+          <a href="tel:+256772507582" class="btn-outline"><i class="fas fa-phone"></i> Call Us</a>
+        </div>
+      </div>
+      <div style="border-radius:18px;overflow:hidden;height:360px;box-shadow:0 20px 60px rgba(0,0,0,.15);">
+        <img src="{% static 'images/product_store.png' %}" alt="MACL Store" style="width:100%;height:100%;object-fit:cover;" onerror="this.src='{% static 'images/products_all.png' %}'">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<div class="cta-band">
+  <div class="container" style="text-align:center;">
+    <div class="section-tag" style="color:#ffd080;border-color:rgba(255,208,128,.25);background:rgba(232,101,26,.15);display:inline-flex;margin-bottom:16px;" data-reveal="up"><i class="fas fa-headset"></i> Expert Agronomy Advice — Free</div>
+    <h2 style="color:#fff;font-family:'Playfair Display',serif;font-size:clamp(1.6rem,3vw,2.4rem);font-weight:900;margin-bottom:10px;" data-reveal="up">Not Sure Which Product to Use?</h2>
+    <p style="color:rgba(255,255,255,.75);font-size:1rem;line-height:1.74;max-width:52ch;margin:0 auto 28px;" data-reveal="up">Tell us your crop, pest, or weed problem — our trained team will recommend the right product, dosage and timing for Ugandan conditions.</p>
+    <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;" data-reveal="up">
+      <a href="https://wa.me/{{ wa_number }}?text=Hello%20MACL%2C%20I%20need%20advice%20on%20my%20crops" target="_blank" class="btn-green btn-ripple" style="background:#25d366;border-color:#25d366;padding:12px 24px;"><i class="fab fa-whatsapp"></i> WhatsApp Us</a>
+      <a href="tel:+256772507582" class="btn-green btn-ripple" style="padding:12px 24px;"><i class="fas fa-phone"></i> +256 772 507582</a>
+      <a href="{% url 'contact' %}" style="display:inline-flex;align-items:center;gap:7px;padding:12px 22px;border-radius:9px;border:1.5px solid rgba(255,255,255,.3);color:#fff;font-weight:700;text-decoration:none;transition:all .2s;" onmouseover="this.style.background='rgba(255,255,255,.1)'" onmouseout="this.style.background='transparent'"><i class="fas fa-envelope"></i> Send a Message</a>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Pass category data to template context
+const statsData = {
+  pesticides: {{ stats.pesticides }},
+  herbicides: {{ stats.herbicides }},
+  fungicides: {{ stats.fungicides }},
+  other:      {{ stats.other }},
+};
+</script>
+{% endblock %}

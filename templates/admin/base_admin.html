@@ -1,0 +1,87 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>{% block title %}Admin{% endblock %} — MACL Admin</title>
+<link rel="icon" type="image/png" href="{% static 'images/logo_full.png' %}">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'css/theme_vars.css' %}">
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+<link rel="stylesheet" href="{% static 'css/animations.css' %}">
+<link rel="stylesheet" href="{% static 'css/admin.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+{% block extra_head %}{% endblock %}
+<script>(function(){var t=localStorage.getItem('muddo-theme')||'light';document.documentElement.setAttribute('data-theme',t);})();</script>
+</head>
+<body>
+<div class="admin-wrap">
+  <!-- SIDEBAR -->
+  <aside class="admin-sidebar">
+    <div class="sidebar-brand">
+      <img src="{% static 'images/logo_full.png' %}" alt="MACL">
+      <div><span class="sidebar-brand-name">MACL Admin</span><span class="sidebar-brand-sub">Muddo Agro Chemicals</span></div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="sidebar-section">Dashboard</div>
+      <a href="{% url 'admin_dashboard' %}" class="sidebar-link {% if request.resolver_match.url_name == 'admin_dashboard' %}active{% endif %}"><i class="fas fa-tachometer-alt"></i> Overview</a>
+
+      <div class="sidebar-section">Catalogue</div>
+      <a href="{% url 'admin_products' %}" class="sidebar-link {% if 'product' in request.resolver_match.url_name %}active{% endif %}"><i class="fas fa-flask"></i> Products</a>
+      <a href="{% url 'admin_inventory' %}" class="sidebar-link {% if 'inventory' in request.resolver_match.url_name %}active{% endif %}"><i class="fas fa-boxes"></i> Inventory</a>
+      <a href="{% url 'admin_distributors' %}" class="sidebar-link {% if 'distributor' in request.resolver_match.url_name %}active{% endif %}"><i class="fas fa-store"></i> Distributors</a>
+
+      <div class="sidebar-section">Operations</div>
+      <a href="{% url 'admin_requests' %}" class="sidebar-link {% if request.resolver_match.url_name == 'admin_requests' %}active{% endif %}">
+        <i class="fas fa-envelope"></i> Enquiries
+        {% if pending_count %}<span class="sidebar-badge" style="background:var(--orange);color:#fff;">{{ pending_count }}</span>{% endif %}
+      </a>
+      <a href="{% url 'admin_supply_requests' %}" class="sidebar-link {% if 'supply' in request.resolver_match.url_name %}active{% endif %}"><i class="fas fa-truck"></i> Supply Requests</a>
+      <a href="{% url 'admin_agents' %}" class="sidebar-link {% if 'agent' in request.resolver_match.url_name %}active{% endif %}"><i class="fas fa-users"></i> Field Agents</a>
+      <a href="{% url 'admin_chat' %}" class="sidebar-link {% if 'chat' in request.resolver_match.url_name %}active{% endif %}">
+        <i class="fas fa-comments"></i> Messages
+        {% if unread_count %}<span class="sidebar-badge" style="background:#e53935;color:#fff;">{{ unread_count }}</span>{% endif %}
+      </a>
+
+      <div class="sidebar-section">Tools</div>
+      <a href="{% url 'admin_newsletter' %}" class="sidebar-link {% if 'newsletter' in request.resolver_match.url_name %}active{% endif %}"><i class="fas fa-paper-plane"></i> Newsletter</a>
+      <a href="{% url 'admin_import' %}" class="sidebar-link {% if 'import' in request.resolver_match.url_name %}active{% endif %}"><i class="fas fa-upload"></i> Import CSV</a>
+      <a href="{% url 'admin_settings' %}" class="sidebar-link {% if 'settings' in request.resolver_match.url_name %}active{% endif %}"><i class="fas fa-cog"></i> Settings</a>
+    </nav>
+    <div class="sidebar-footer">
+      <a href="{% url 'index' %}" class="sidebar-link" target="_blank"><i class="fas fa-globe"></i> View Website</a>
+      <a href="{% url 'logout' %}" class="sidebar-link" style="color:rgba(255,120,120,.8);"><i class="fas fa-sign-out-alt"></i> Logout</a>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="admin-main">
+    <div class="admin-topbar">
+      <div class="admin-topbar-title">
+        <i class="fas fa-{% block page_icon %}tachometer-alt{% endblock %}"></i>
+        {% block page_heading %}Dashboard{% endblock %}
+      </div>
+      <div style="display:flex;align-items:center;gap:14px;">
+        <span style="font-size:.82rem;color:var(--text-muted);">{{ request.user.get_full_name|default:request.user.username }}</span>
+        <div style="width:34px;height:34px;border-radius:50%;background:var(--orange);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.88rem;">
+          {{ request.user.get_full_name|first|upper|default:request.user.username|first|upper }}
+        </div>
+        <button onclick="toggleTheme()" style="background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:1rem;padding:4px;" title="Toggle dark mode"><i class="fas fa-moon" data-theme-icon></i></button>
+      </div>
+    </div>
+    <div class="admin-content">
+      {% if messages %}{% for message in messages %}
+      <div class="admin-flash {% if 'error' in message.tags %}flash-error{% else %}flash-success{% endif %}">
+        <i class="fas {% if 'error' in message.tags %}fa-exclamation-circle{% else %}fa-check-circle{% endif %}"></i>
+        <span>{{ message|safe }}</span>
+        <button onclick="this.closest('.admin-flash').remove()" style="background:none;border:none;cursor:pointer;margin-left:auto;color:inherit;"><i class="fas fa-times"></i></button>
+      </div>{% endfor %}{% endif %}
+      {% block content %}{% endblock %}
+    </div>
+  </div>
+</div>
+<script src="{% static 'js/theme.js' %}"></script>
+<script src="{% static 'js/enhancements.js' %}"></script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

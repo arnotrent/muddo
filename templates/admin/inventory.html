@@ -1,0 +1,126 @@
+{% extends "admin/base_admin.html" %}
+{% load static %}
+{% block title %}Inventory{% endblock %}
+{% block page_icon %}boxes{% endblock %}
+{% block page_heading %}Inventory Management{% endblock %}
+
+{% block content %}
+<!-- Summary bar -->
+<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px;">
+  {% with total=items|length %}
+  <div style="background:var(--bg-card);border:1.5px solid var(--border-color);border-radius:12px;padding:16px 18px;">
+    <div style="font-size:.72rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;">Total Products</div>
+    <div style="font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:900;color:var(--text-primary);">{{ total }}</div>
+  </div>
+  {% endwith %}
+  <div style="background:var(--bg-card);border:1.5px solid var(--border-color);border-radius:12px;padding:16px 18px;">
+    <div style="font-size:.72rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;">In Stock</div>
+    <div style="font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:900;color:#2e7d32;">{{ items|length }}</div>
+  </div>
+  <div style="background:#fff8e1;border:1.5px solid #ffe082;border-radius:12px;padding:16px 18px;">
+    <div style="font-size:.72rem;font-weight:700;color:#f57c00;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;">Low Stock</div>
+    <div style="font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:900;color:#f57c00;">{% with cnt=0 %}{% for i in items %}{% if i.is_low %}{% with cnt=cnt|add:1 %}{% endwith %}{% endif %}{% endfor %}{{ cnt }}{% endwith %}</div>
+  </div>
+  <div style="background:#fce8e2;border:1.5px solid #ef9a9a;border-radius:12px;padding:16px 18px;">
+    <div style="font-size:.72rem;font-weight:700;color:#c62828;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;">Out of Stock</div>
+    <div style="font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:900;color:#c62828;">{% with cnt=0 %}{% for i in items %}{% if i.stock_qty == 0 %}{% with cnt=cnt|add:1 %}{% endwith %}{% endif %}{% endfor %}{{ cnt }}{% endwith %}</div>
+  </div>
+</div>
+
+<!-- Stock table -->
+<div class="admin-card">
+  <div class="admin-card-header">
+    <div class="admin-card-title"><i class="fas fa-boxes"></i> Stock Levels</div>
+    <input type="text" id="invSearch" placeholder="Search products…" oninput="searchTable(this.value,'invTable')"
+      style="padding:7px 12px;border:1.5px solid var(--border-color);border-radius:9px;font-family:'DM Sans',sans-serif;font-size:.84rem;background:var(--bg-input);color:var(--text-primary);width:200px;" onfocus="this.style.borderColor='var(--orange)'" onblur="this.style.borderColor='var(--border-color)'">
+  </div>
+  <div class="tbl-wrap">
+    <table class="data-table" id="invTable">
+      <thead>
+        <tr><th>Product</th><th>Category</th><th>Current Stock</th><th>Unit</th><th>Reorder Level</th><th>Status</th><th>Update Stock</th></tr>
+      </thead>
+      <tbody>
+        {% for item in items %}
+        <tr data-search="{{ item.product.name|lower }} {{ item.product.category }}">
+          <td><strong>{{ item.product.name }}</strong></td>
+          <td><span class="badge {% if item.product.category == 'pesticide' %}badge-denied{% elif item.product.category == 'herbicide' %}badge-approved{% elif item.product.category == 'fungicide' %}badge-new{% else %}badge-pending{% endif %}">{{ item.product.get_category_display }}</span></td>
+          <td><strong style="font-size:1.1rem;color:var(--text-primary);">{{ item.stock_qty }}</strong></td>
+          <td style="color:var(--text-muted);font-size:.86rem;">{{ item.unit }}</td>
+          <td style="color:var(--text-muted);font-size:.86rem;">{{ item.reorder_level }}</td>
+          <td>
+            {% if item.stock_qty == 0 %}<span class="badge badge-out">Out of Stock</span>
+            {% elif item.is_low %}<span class="badge badge-low">Low Stock</span>
+            {% else %}<span class="badge badge-in">OK</span>{% endif %}
+          </td>
+          <td>
+            <div style="display:flex;gap:6px;align-items:center;">
+              <input type="number" id="qty_{{ item.product.id }}" placeholder="Qty" min="0"
+                style="width:70px;padding:6px 8px;border:1.5px solid var(--border-color);border-radius:7px;font-size:.84rem;background:var(--bg-input);color:var(--text-primary);">
+              <select id="act_{{ item.product.id }}"
+                style="padding:6px 8px;border:1.5px solid var(--border-color);border-radius:7px;font-size:.84rem;background:var(--bg-input);color:var(--text-primary);">
+                <option value="add">Add</option>
+                <option value="remove">Remove</option>
+                <option value="set">Set To</option>
+              </select>
+              <button onclick="updateStock({{ item.product.id }})" class="btn-admin btn-primary-admin" style="padding:6px 12px;font-size:.78rem;">
+                <i class="fas fa-check"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="7" style="text-align:center;color:var(--text-muted);padding:32px;">No inventory records. Add products first.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Activity log -->
+{% if log %}
+<div class="admin-card">
+  <div class="admin-card-header"><div class="admin-card-title"><i class="fas fa-history"></i> Recent Activity</div></div>
+  <div class="tbl-wrap">
+    <table class="data-table">
+      <thead><tr><th>Product</th><th>Change</th><th>Reason</th><th>By</th><th>Date</th></tr></thead>
+      <tbody>
+        {% for l in log %}
+        <tr>
+          <td>{{ l.product.name }}</td>
+          <td><strong style="color:{% if l.change_qty >= 0 %}#2e7d32{% else %}#c62828{% endif %};">{% if l.change_qty >= 0 %}+{% endif %}{{ l.change_qty }}</strong></td>
+          <td style="color:var(--text-muted);font-size:.84rem;">{{ l.reason|default:"—" }}</td>
+          <td style="color:var(--text-muted);font-size:.84rem;">{{ l.changed_by|default:"system" }}</td>
+          <td style="color:var(--text-muted);font-size:.78rem;white-space:nowrap;">{{ l.created_at|date:"d M Y H:i" }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function searchTable(q, tableId){
+  const term=q.toLowerCase();
+  document.querySelectorAll(`#${tableId} tbody tr[data-search]`).forEach(tr=>{
+    tr.style.display=tr.dataset.search.includes(term)?'':'none';
+  });
+}
+function getCookie(n){const v=`; ${document.cookie}`.split(`; ${n}=`);if(v.length===2)return v.pop().split(';').shift();}
+async function updateStock(pid){
+  const qty=parseInt(document.getElementById(`qty_${pid}`).value);
+  const action=document.getElementById(`act_${pid}`).value;
+  if(isNaN(qty)||qty<0){window.toast?.error('Enter a valid quantity.');return;}
+  const res=await fetch('{% url "admin_update_inventory" %}',{
+    method:'POST',
+    headers:{'Content-Type':'application/x-www-form-urlencoded','X-CSRFToken':getCookie('csrftoken')},
+    body:`product_id=${pid}&qty=${qty}&action=${action}&reason=Admin+update`
+  });
+  const data=await res.json();
+  if(data.ok){window.toast?.success('Updated to '+data.new_qty+' units');setTimeout(()=>location.reload(),900);}
+  else{window.toast?.error('Update failed.');}
+}
+</script>
+{% endblock %}

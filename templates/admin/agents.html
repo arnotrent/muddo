@@ -1,0 +1,83 @@
+{% extends "admin/base_admin.html" %}
+{% load static %}
+{% block title %}Field Agents{% endblock %}
+{% block page_icon %}users{% endblock %}
+{% block page_heading %}Field Agents{% endblock %}
+
+{% block content %}
+<div style="display:grid;grid-template-columns:380px 1fr;gap:20px;">
+  <!-- Add agent -->
+  <div class="admin-card" style="align-self:start;">
+    <div class="admin-card-header"><div class="admin-card-title"><i class="fas fa-user-plus"></i> Add New Agent</div></div>
+    <div class="admin-card-body">
+      <form method="POST" action="{% url 'admin_add_agent' %}">
+        {% csrf_token %}
+        <div class="admin-form-group"><label>Full Name <span>*</span></label><input name="name" class="admin-input" placeholder="e.g. Alice Namukasa" required></div>
+        <div class="admin-form-group"><label>Username <span>*</span></label><input name="username" class="admin-input" placeholder="e.g. alice" required></div>
+        <div class="admin-form-group"><label>Email</label><input name="email" type="email" class="admin-input" placeholder="agent@example.com"></div>
+        <div class="admin-form-group"><label>Phone</label><input name="phone" class="admin-input" placeholder="+256 7XX XXX XXX"></div>
+        <div class="admin-form-group"><label>Region</label>
+          <select name="region" class="admin-input">
+            <option value="Central">Central</option>
+            <option value="Eastern">Eastern</option>
+            <option value="Northern">Northern</option>
+            <option value="Western">Western</option>
+          </select>
+        </div>
+        <div class="admin-form-group"><label>District</label><input name="district" class="admin-input" placeholder="e.g. Kampala"></div>
+        <div class="admin-form-group"><label>Password <span>*</span></label><input name="password" type="password" class="admin-input" placeholder="Minimum 8 characters" required></div>
+        <button type="submit" class="btn-admin btn-primary-admin"><i class="fas fa-user-plus"></i> Add Agent</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Agents table -->
+  <div class="admin-card" style="align-self:start;">
+    <div class="admin-card-header">
+      <div class="admin-card-title"><i class="fas fa-list"></i> All Agents ({{ agents|length }})</div>
+    </div>
+    <div class="tbl-wrap">
+      <table class="data-table">
+        <thead><tr><th>Agent</th><th>Region</th><th>Phone</th><th>Status</th><th>Last Active</th><th>Actions</th></tr></thead>
+        <tbody>
+          {% for agent in agents %}
+          <tr>
+            <td>
+              <div style="display:flex;align-items:center;gap:10px;">
+                <div style="width:36px;height:36px;border-radius:50%;background:var(--orange);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.86rem;flex-shrink:0;">{{ agent.name|first|upper }}</div>
+                <div>
+                  <strong>{{ agent.name }}</strong>
+                  <br><small style="color:var(--text-muted);font-size:.75rem;">@{{ agent.username }}{% if agent.email %} · {{ agent.email }}{% endif %}</small>
+                </div>
+              </div>
+            </td>
+            <td style="font-size:.85rem;">{{ agent.region|default:"—" }}<br><small style="color:var(--text-muted);">{{ agent.district|default:"" }}</small></td>
+            <td><a href="tel:{{ agent.phone }}" style="color:var(--orange);font-size:.86rem;">{{ agent.phone|default:"—" }}</a></td>
+            <td><span class="badge badge-{{ agent.status }}">{{ agent.status|title }}</span></td>
+            <td style="font-size:.78rem;color:var(--text-muted);">{% if agent.last_seen %}{{ agent.last_seen|date:"d M Y H:i" }}{% else %}Never{% endif %}</td>
+            <td>
+              <div style="display:flex;gap:5px;align-items:center;flex-wrap:wrap;">
+                <a href="{% url 'admin_chat' %}#chat-{{ agent.id }}" class="btn-admin btn-secondary-admin" style="padding:5px 8px;font-size:.76rem;" title="Send message"><i class="fas fa-comment"></i></a>
+                <a href="{% url 'agent_report' agent.id %}" class="btn-admin btn-secondary-admin" style="padding:5px 8px;font-size:.76rem;" title="Download report PDF"><i class="fas fa-file-pdf"></i></a>
+                <form method="POST" action="{% url 'admin_toggle_agent' agent.id %}" style="display:inline;">
+                  {% csrf_token %}
+                  <button type="submit" class="btn-admin {% if agent.status == 'active' %}btn-secondary-admin{% else %}btn-success-admin{% endif %}" style="padding:5px 8px;font-size:.76rem;" title="Toggle status">
+                    <i class="fas {% if agent.status == 'active' %}fa-pause{% else %}fa-play{% endif %}"></i>
+                  </button>
+                </form>
+                <form method="POST" action="{% url 'admin_delete_agent' agent.id %}" style="display:inline;" onsubmit="return confirm('Delete agent {{ agent.name }}?')">
+                  {% csrf_token %}
+                  <button type="submit" class="btn-admin btn-danger-admin" style="padding:5px 8px;font-size:.76rem;"><i class="fas fa-trash"></i></button>
+                </form>
+              </div>
+            </td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:32px;">No agents yet. Add one to get started.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

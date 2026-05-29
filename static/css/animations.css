@@ -1,0 +1,172 @@
+/* ═══════════════════════════════════════════════════════
+   MUDDO AGRO — ANIMATIONS & MICRO-INTERACTIONS
+═══════════════════════════════════════════════════════ */
+
+/* ── SCROLL PROGRESS BAR ──────────────────────────────── */
+.scroll-progress {
+  position: fixed; top: 0; left: 0; height: 3px; z-index: 10001;
+  background: linear-gradient(90deg, #e8651a 0%, #1a6abf 50%, #ffd080 100%);
+  pointer-events: none; transition: width .1s ease;
+  box-shadow: 0 0 8px rgba(232,101,26,.4);
+}
+
+/* ── PAGE LOAD FADE IN ────────────────────────────────── */
+body { animation: pageIn .4s ease-out both; }
+@keyframes pageIn { from { opacity: 0; } to { opacity: 1; } }
+
+/* ── REVEAL ON SCROLL ─────────────────────────────────── */
+[data-reveal] {
+  opacity: 0; transform: translateY(24px);
+  transition: opacity .7s cubic-bezier(.22,1,.36,1), transform .7s cubic-bezier(.22,1,.36,1);
+}
+[data-reveal].revealed { opacity: 1; transform: none; }
+[data-reveal="left"]  { transform: translateX(-24px); }
+[data-reveal="right"] { transform: translateX(24px); }
+[data-reveal="scale"] { transform: scale(.95); }
+[data-reveal="left"].revealed,
+[data-reveal="right"].revealed,
+[data-reveal="scale"].revealed { transform: none; }
+
+/* ── HERO ENTRANCE ────────────────────────────────────── */
+.anim-fade-down {
+  animation: fadeDown .7s cubic-bezier(.22,1,.36,1) both;
+}
+.anim-fade-up {
+  animation: fadeUp .7s cubic-bezier(.22,1,.36,1) both;
+}
+.anim-fade-left {
+  animation: fadeLeft .7s cubic-bezier(.22,1,.36,1) both;
+}
+.delay-1 { animation-delay: .1s; }
+.delay-2 { animation-delay: .2s; }
+.delay-3 { animation-delay: .3s; }
+.delay-4 { animation-delay: .4s; }
+.delay-5 { animation-delay: .5s; }
+
+@keyframes fadeDown  { from { opacity:0; transform:translateY(-16px) } to { opacity:1; transform:none } }
+@keyframes fadeUp    { from { opacity:0; transform:translateY(16px)  } to { opacity:1; transform:none } }
+@keyframes fadeLeft  { from { opacity:0; transform:translateX(24px)  } to { opacity:1; transform:none } }
+
+/* ── FLOAT ANIMATION (logo, hero elements) ─────────────── */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-8px); }
+}
+.float { animation: float 4s ease-in-out infinite; }
+
+/* ── PULSE (badges, alerts) ───────────────────────────── */
+@keyframes pulse {
+  0%, 100% { opacity: .75; transform: scale(1); }
+  50%       { opacity: 1;   transform: scale(1.04); }
+}
+.pulse { animation: pulse 2s ease-in-out infinite; }
+
+/* ── SHIMMER (loading skeleton) ───────────────────────── */
+@keyframes shimmer {
+  0%   { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+.skeleton {
+  background: linear-gradient(90deg, var(--bg-alt) 25%, rgba(255,255,255,.6) 50%, var(--bg-alt) 75%);
+  background-size: 800px 100%;
+  animation: shimmer 1.4s infinite;
+  border-radius: 8px;
+}
+[data-theme="dark"] .skeleton {
+  background: linear-gradient(90deg, #1a1730 25%, rgba(255,255,255,.04) 50%, #1a1730 75%);
+  background-size: 800px 100%;
+}
+
+/* ── RIPPLE BUTTON EFFECT ─────────────────────────────── */
+@keyframes rippleEffect {
+  to { transform: scale(28); opacity: 0; }
+}
+.btn-ripple { overflow: hidden; position: relative; }
+
+/* ── SLIDE IN (toast/flash messages) ─────────────────── */
+@keyframes slideInRight {
+  from { transform: translateX(110%); opacity: 0; }
+  to   { transform: none; opacity: 1; }
+}
+@keyframes slideInUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to   { transform: none; opacity: 1; }
+}
+.slide-in-right { animation: slideInRight .35s cubic-bezier(.22,1,.36,1) both; }
+.slide-in-up    { animation: slideInUp   .35s cubic-bezier(.22,1,.36,1) both; }
+
+/* ── CARD HOVER LIFT (micro-interaction) ──────────────── */
+.hover-lift {
+  transition: transform .3s cubic-bezier(.34,1.56,.64,1), box-shadow .3s ease;
+}
+.hover-lift:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 16px 40px rgba(232,101,26,.14);
+}
+
+/* ── ICON SPIN ON HOVER ───────────────────────────────── */
+.spin-hover i { transition: transform .4s ease; }
+.spin-hover:hover i { transform: rotate(15deg) scale(1.1); }
+
+/* ── NUMBER COUNTING EFFECT (JS-driven) ──────────────── */
+.count-up { display: inline-block; transition: none; }
+
+/* ── GRADIENT TEXT ────────────────────────────────────── */
+.grad-text {
+  background: linear-gradient(135deg, #e8651a, #ffd080);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.grad-text-blue {
+  background: linear-gradient(135deg, #1a6abf, #60aaff);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── GLOW EFFECTS ─────────────────────────────────────── */
+.glow-orange { box-shadow: 0 0 20px rgba(232,101,26,.35), 0 0 40px rgba(232,101,26,.15) !important; }
+.glow-blue   { box-shadow: 0 0 20px rgba(26,106,191,.35), 0 0 40px rgba(26,106,191,.15) !important; }
+
+/* ── STAR FIELD (hero background) ────────────────────── */
+@keyframes starfield {
+  0%   { opacity: .5; }
+  50%  { opacity: 1; }
+  100% { opacity: .6; }
+}
+
+/* ── NEBULA PULSE ─────────────────────────────────────── */
+@keyframes nebulaPulse {
+  0%, 100% { transform: scale(1); opacity: .7; }
+  50%       { transform: scale(1.08); opacity: 1; }
+}
+
+/* ── DROPDOWN ENTRANCE ────────────────────────────────── */
+@keyframes dropFade {
+  from { opacity: 0; transform: translateY(-6px) scale(.98); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* ── MODAL ENTRANCE ───────────────────────────────────── */
+@keyframes modalSlideIn {
+  from { opacity: 0; transform: scale(.93) translateY(16px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* ── TOAST AUTO-DISMISS ───────────────────────────────── */
+@keyframes toastOut {
+  to { opacity: 0; transform: translateX(110%); }
+}
+
+/* ── SCROLL INDICATOR BOUNCE ──────────────────────────── */
+@keyframes scrollBounce {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(6px); }
+}
+.scroll-indicator { animation: scrollBounce 1.8s ease-in-out infinite; }
+
+/* ── FOCUS RING ───────────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid var(--orange, #e8651a);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
