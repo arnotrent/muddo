@@ -16,8 +16,6 @@ const PRECACHE = [
   '/distributors',
   '/contact',
   '/static/css/style.css',
-  '/static/css/products.css',
-  '/static/css/admin.css',
   '/static/css/animations.css',
   '/static/css/theme.css',
   '/static/css/typography.css',

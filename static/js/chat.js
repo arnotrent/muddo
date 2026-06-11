@@ -78,7 +78,7 @@ class MuddoChat {
   async loadMessages(scroll) {
     if (!this.currentWith) return;
     try {
-      const url = `/api/chat/messages/?with_id=${this.currentWith.id}&with_role=${this.currentWith.role}&after=${this.lastMsgId}`;
+      const url = `/api/chat/messages?with_id=${this.currentWith.id}&with_role=${this.currentWith.role}&after=${this.lastMsgId}`;
       const res  = await fetch(url);
       const data = await res.json();
       if (!data.messages?.length) return;
@@ -95,7 +95,7 @@ class MuddoChat {
         if (atBottom) this.scrollBottom();
       }
       // Mark as read
-      fetch(`/api/chat/mark-read/`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ from_id: this.currentWith.id, from_role: this.currentWith.role }) });
+      fetch(`/api/chat/mark-read`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ from_id: this.currentWith.id, from_role: this.currentWith.role }) });
     } catch(e) { /* silent */ }
   }
 
@@ -123,7 +123,7 @@ class MuddoChat {
     this.inputBox.style.height = 'auto';
 
     try {
-      const res = await fetch('/api/chat/send/', {
+      const res = await fetch('/api/chat/send', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ to_id: this.currentWith.id, to_role: this.currentWith.role, content })
@@ -146,7 +146,7 @@ class MuddoChat {
 
   async pollUnread() {
     try {
-      const res  = await fetch('/api/chat/unread/');
+      const res  = await fetch('/api/chat/unread');
       const data = await res.json();
       // Update nav badge
       const navBadge = document.getElementById('chatNavBadge');

@@ -4,7 +4,7 @@ services:
     env: python
     buildCommand: >
       pip install -r requirements.txt &&
-      python manage.py migrate &&
+      python manage.py migrate --noinput &&
       python manage.py collectstatic --noinput &&
       python manage.py seed_data
     startCommand: gunicorn muddo_project.wsgi:application --bind 0.0.0.0:$PORT --workers 2 --timeout 120
