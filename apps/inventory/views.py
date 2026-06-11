@@ -1,1 +1,1 @@
-# Inventory views are in apps/analytics/views.py
+# Inventory views handled via analytics/views.py

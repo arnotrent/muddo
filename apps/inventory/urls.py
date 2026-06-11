@@ -1,1 +1,1 @@
-# Inventory URLs are handled via analytics/urls.py
+# Inventory URLs handled via analytics/urls.py
