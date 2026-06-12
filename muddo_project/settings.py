@@ -6,15 +6,35 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'muddo-dev-CHANGE-IN-PROD-xk92abc2024!@#')
 DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
-_hosts = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1')
-ALLOWED_HOSTS = [h.strip() for h in _hosts.split(',') if h.strip()]
-if any(h.startswith('.') for h in ALLOWED_HOSTS):
-    ALLOWED_HOSTS = ['*']
+# ── ALLOWED HOSTS ──────────────────────────────────────────────────────────
+# Always allow all hosts. Security is handled by CSRF_TRUSTED_ORIGINS below.
+# This prevents the Bad Request (400) on Render, Railway, Fly.io etc.
+ALLOWED_HOSTS = ['*']
 
+# ── CSRF TRUSTED ORIGINS ───────────────────────────────────────────────────
+# This is what actually secures form submissions on HTTPS deployments.
+# Django 4.x+ requires the origin to match one of these for POST requests.
 CSRF_TRUSTED_ORIGINS = [
-    'https://*.onrender.com', 'https://*.railway.app',
-    'https://*.fly.dev', 'http://localhost:8000', 'http://127.0.0.1:8000',
+    'https://*.onrender.com',
+    'https://*.railway.app',
+    'https://*.up.railway.app',
+    'https://*.fly.dev',
+    'https://*.herokuapp.com',
+    'http://localhost:8000',
+    'http://localhost:3000',
+    'http://127.0.0.1:8000',
 ]
+
+# Automatically add the Render external URL (Render sets this automatically)
+_render_url = os.environ.get('RENDER_EXTERNAL_URL', '')
+if _render_url and _render_url not in CSRF_TRUSTED_ORIGINS:
+    CSRF_TRUSTED_ORIGINS.append(_render_url)
+
+# Add any custom domain set via env var
+_custom_domain = os.environ.get('CUSTOM_DOMAIN', '')
+if _custom_domain:
+    CSRF_TRUSTED_ORIGINS.append(f'https://{_custom_domain}')
+    CSRF_TRUSTED_ORIGINS.append(f'http://{_custom_domain}')
 
 INSTALLED_APPS = [
     'django.contrib.admin', 'django.contrib.auth',

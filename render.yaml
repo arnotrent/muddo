@@ -13,8 +13,6 @@ services:
         generateValue: true
       - key: DEBUG
         value: "False"
-      - key: ALLOWED_HOSTS
-        value: ".onrender.com"
       - key: MAIL_PASSWORD
         sync: false
       - key: GA_MEASUREMENT_ID

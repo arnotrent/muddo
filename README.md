@@ -1,97 +1,59 @@
 # 🌿 Muddo Agro Chemicals LTD — Official Website
 
-A professional Django web application for **Muddo Agro Chemicals LTD (MACL)**, Uganda's trusted MAAIF-registered distributor of pesticides, herbicides, fungicides, fertilizers and spraying equipment.
-
----
-
-## ✨ Features
-
-### Public Website
-- **Product Catalogue** — 18 real MACL products across 4 categories with full technical specifications
-- **PDF Spec Sheets** — Download professional data sheets for any product
-- **Product Comparison** — Side-by-side comparison of up to 3 products
-- **Store Locator** — 11 authorised outlets across all 4 regions of Uganda, filter by region
-- **Contact Form** — With reference number tracking system
-- **Search** — Full-text search across products, active ingredients, crops and distributors
-- **Newsletter** — Email subscription with footer form
-- **Dark Mode** — Full dark/light theme with localStorage persistence
-- **PWA** — Progressive Web App with offline caching via service worker
-- **SEO** — Sitemap, robots.txt, structured data (JSON-LD), Open Graph tags
-
-### Admin Panel (`/admin-panel/`)
-- **Dashboard** — KPI cards, recent enquiries, low stock alerts, agent status
-- **Product Management** — Add/delete products with image upload, bulk CSV import
-- **Inventory** — Real-time stock tracking with reorder alerts and activity log
-- **Enquiry Management** — Filter, update status, reply by email
-- **Distributor Management** — Add/remove outlets with GPS coordinates
-- **Agent Management** — Add/deactivate field agents, reset passwords, PDF reports
-- **Supply Requests** — Approve/deny agent requests with automatic notifications
-- **Real-time Chat** — Instant messaging between admin and field agents
-- **Newsletter** — Subscriber management
-- **Settings** — Password management, system information
-
-### Agent Portal (`/agent/dashboard/`)
-- Submit supply requests to HQ
-- Track request status (Pending / Approved / Denied)
-- Real-time chat with admin
-- View full product catalogue
-
----
+Django web application for **Muddo Agro Chemicals LTD (MACL)**, Uganda's MAAIF-registered agrochemical distributor.
 
 ## 🚀 Quick Start
 
 ```bash
-git clone <your-repo> muddo_agro && cd muddo_agro
-python3 -m venv venv && source venv/bin/activate
+unzip muddo_agro_django.zip && cd muddo_project
 pip install -r requirements.txt
-cp .env.example .env
 python manage.py migrate
 python manage.py seed_data
 python manage.py runserver
 ```
 
-Open **http://127.0.0.1:8000**
+Open **http://127.0.0.1:8000** — Login at `/login/`
 
-Login at **http://127.0.0.1:8000/login/**
-- Admin: `admin` / `muddo@admin2024`
-- Agent: `alice` / `agent@2024`
+| Role | Username | Password |
+|------|----------|----------|
+| Admin | admin | muddo@admin2024 |
+| Agent | alice / robert / grace / patrick | agent@2024 |
 
----
+## 📱 Device Compatibility
 
-## 🏢 About MACL
+- **Mobile (320px+)** — Full mobile menu, stacked layouts, optimised touch targets (44px min)
+- **Tablet (640–959px)** — 2-column grids, adapted navigation  
+- **Desktop (960px+)** — Full navbar with dropdown menus, multi-column layouts
 
-**Muddo Agro Chemicals LTD (MACL)**
-Container Village Nakivubo, Equity Bank Basement V013
-P.O Box 25240, Kampala, Uganda
+## 🧭 Navigation Features
 
-- **Tel:** 0772-507582 / 0702-507582 / 0772 971620 / 0701-971620
-- **Email:** kulanju_w@yahoo.com
-- **Facebook:** [MUDDO AGRO Chemicals LTD](https://facebook.com/p/MUDDO-AGRO-Chemicals-LTD-100063836929481/)
+- Sticky navbar with scroll shadow
+- Mega dropdown for Products (Pesticides / Herbicides / Fungicides / Fertilizers / Compare)
+- Hamburger mobile menu with search, CTAs and all links
+- WhatsApp FAB (bottom-right) on every page
+- Back-to-top button
+- Dark/light mode toggle (persisted in localStorage)
 
----
+## ☁️ Deploy on Render.com
 
-## 📋 Real Products in This System
+Build command:
+```
+pip install -r requirements.txt && python manage.py migrate --noinput && python manage.py collectstatic --noinput && python manage.py seed_data
+```
 
-| Category | Products |
-|----------|---------|
-| Herbicides | MUDDOSATE 480SL, MD MAIZE PLUS 40OD, MAX 2.4-D 720SL, MD AMETRYN 500SC, WEED IT 75.7 XL |
-| Pesticides | MD ACELEMECTIN 48EC, MD FOS 48EC, TOP FENOS 50EC, MD THION 350EC, MD THOATE 40EC |
-| Fungicides | TOP-LAXLY M 72WP, MD TOP LAXLYN 72WP, TOPLAXLY 72WP, COPPER OXYCHLORIDE 850WP |
-| Fertilizers & Equipment | UREA 46%N, NPK 17:17:17, FOLIAR BOOST 20-20-20+TE, KNAPSACK SPRAYER 16L |
+Start command:
+```
+gunicorn muddo_project.wsgi:application --bind 0.0.0.0:$PORT --workers 2 --timeout 120
+```
 
----
+See `render.yaml` — just connect your GitHub repo and deploy.
 
-## 🔧 Tech Stack
+## 📦 What's Included
 
-| Layer | Technology |
-|-------|-----------|
-| Framework | Django 4.2 |
-| Database | SQLite (dev) / PostgreSQL (prod) |
-| Static Files | WhiteNoise |
-| PDF Generation | ReportLab |
-| Frontend | Vanilla JS, CSS custom properties, PWA |
-| Deployment | Gunicorn + Nginx / Render.com |
-
----
-
-## 📁 See DEPLOY.md for full deployment instructions.
+- **18 real MACL products** — pesticides, herbicides, fungicides, fertilizers, equipment
+- **11 distributor outlets** — all 4 regions of Uganda with GPS coordinates
+- **30 HTML templates** — fully responsive, no quote/CTA section
+- **PDF spec sheets** — professional ReportLab-generated data sheets per product
+- **Admin panel** — full product/inventory/agent/chat/enquiry management
+- **Agent portal** — supply requests, real-time chat with admin
+- **PWA-ready** — service worker, manifest, offline caching
